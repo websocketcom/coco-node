@@ -66,7 +66,7 @@ const wsserver = () => {
     server.on("error", on_server_listen_error);
 
     function on_server_headers(data) {
-        console.log(data);
+        // console.log(data);
     }
 
     server.on("headers", on_server_headers);
