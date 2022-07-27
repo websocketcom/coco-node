@@ -6,10 +6,10 @@ const wsService = require('./wsService')
 const wsCommond = async (ws) => {
     ws.timerCommond = new Object()
     //检测连接
-    ws.timerCommond.close = setInterval(()=>{
-        wsService.timeOutExpClose(ws)
-        console.log(ws.subList)
-    },3000)
+    // ws.timerCommond.close = setInterval(()=>{
+    //     wsService.timeOutExpClose(ws)
+    //     console.log(ws.subList)
+    // },3000)
     //推送kline
 
     Object.keys(ws.subList).forEach(item=>{

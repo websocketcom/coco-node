@@ -1,6 +1,9 @@
 const redis  = require('../../utils/redis/redis_3.0.2/redis')
 const {btoa} = require('buffer')
 const pako = require('pako')
+const db = require("../../utils/mysql/Simple/mysql");
+const KlinesSQL = require("../../utils/mysql/modelExamples/model/klines");
+const {jsonParse} = require("../../utils/tools/tool");
 
 const timeOutExpClose = (ws) => {
     console.log(parseInt((new Date()).getTime() / 10000) - Number(ws.timeOutExp))
@@ -15,9 +18,9 @@ const wsSend = (ws, data, type = 'msg', code = 200) => {
         code: code,
         data: data
     }
-    // resultData = pako.gzip(btoa(JSON.stringify(resultData, true)), {to: "string"})
-    // ws.send(resultData);
-    ws.send(JSON.stringify(resultData, true));
+    resultData = pako.gzip(btoa(JSON.stringify(resultData, true)), {to: "string"})
+    ws.send(resultData);
+    // ws.send(JSON.stringify(resultData, true));
 }
 
 const wsMasrketSub = (ws, data) => {
@@ -25,22 +28,27 @@ const wsMasrketSub = (ws, data) => {
         if (ws.subList.hasOwnProperty(sub[0])) {
             if (sub[0] == 'kline') {
                 let subMeta = sub[1].split('_')
-                redis.getValue('history:' + subMeta[0] + ':' + subMeta[1]).then(res => {
-                    if (res) {
-                        let history = JSON.parse(res)
-                        let resultData = {
-                            symbol: subMeta[0],
-                            interval: subMeta[1],
-                            data: history
-                        }
-                        wsSend(ws, resultData, "history")
-                    } else {
-                        let resultData = {
-                            'subed': data.sub,
-                            'id': data.id || ''
-                        }
-                        wsSend(ws, resultData, "subed", 1000)
+                db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 500], function (result, fields) {
+                    let history = [];
+                    let historyData = {};
+                    if (result.length > 0){
+                        result.forEach(item=>{
+                            let sdata = JSON.parse(item.content)
+                            historyData[parseInt(sdata.time/1000)]= sdata
+                        })
                     }
+                    Object.keys(historyData).forEach(item=>{
+                        history.push(historyData[item])
+                    })
+                    history.sort((a,b)=>{
+                        return parseInt(b.time/1000) - parseInt(a.time/1000)
+                    })
+                    let resultData = {
+                        symbol: subMeta[0],
+                        interval: subMeta[1],
+                        data: history
+                    }
+                    wsSend(ws, resultData, "history")
                 })
             }
             ////需要判断
