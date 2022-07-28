@@ -74,20 +74,20 @@ const tickerSend = (ws) => {
         if (tickerData[1] == 'all') {
             redis.keys("ticker:*").then(tickerRes => {
                 tickerRes.forEach((tickerResItem => {
-                    redis.getValue(tickerResItem).then(tickerRes => {
-                        let metaData = JSON.parse(tickerRes)
+                    redis.getValue(tickerResItem).then(tickerResItemRes => {
+                        let metaData = JSON.parse(tickerResItemRes)
                         console.log(metaData)
                         wsService.wsSend(ws, metaData, 'ticker')
                     })
                 }))
             })
         } else {
-            redis.getValue(ticker).then(res => {
+            redis.getValue(ticker).then(tickerRes => {
                 if (res) {
-                    let meta = JSON.parse(res)
+                    let meta = JSON.parse(tickerRes)
                     wsService.wsSend(ws, meta, 'ticker')
                 } else {
-                    wsService.wsSend(ws, res, 'ticker')
+                    wsService.wsSend(ws, tickerRes, 'ticker')
                 }
             })
         }
