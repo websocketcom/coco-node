@@ -73,6 +73,7 @@ const tickerSend = (ws) => {
         let tickerData = ticker.split(":")
         if (tickerData[1] == 'all') {
             redis.keys("ticker:*").then(tickerRes => {
+                console.log(tickerRes)
                 tickerRes.forEach((tickerResItem => {
                     redis.getValue(tickerResItem).then(tickerResItemRes => {
                         let metaData = JSON.parse(tickerResItemRes)
