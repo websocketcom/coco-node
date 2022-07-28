@@ -20,6 +20,7 @@
     "ignore": "^5.2.0",
     "mysql": "^2.18.1",
     "node-schedule": "^2.1.0",
+    "pako": "^2.0.4",
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "sade": "^1.8.1",

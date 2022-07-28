@@ -25,11 +25,8 @@ prog.command('sync')
 prog.command('ws')
     .describe('ws server')
     .action(() => {
-        ipAuthorize().then(()=>{
-            wsServer()
-        }).catch((err)=>{
-            console.log(err)
-        })
+        wsServer()
+
     });
 
 

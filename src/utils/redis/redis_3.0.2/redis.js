@@ -120,15 +120,40 @@ const srem = (key,value) => {
        })
     })
 }
+const del = (key) => {
+    return new Promise((resolve, reject) => {
+        client.del(key,function (err,res) {
+            if (err) {
+                reject(err)
+            }else{
+                resolve(res)
+            }
+        })
+    })
+}
+
+const keys = (value) => {
+    return new Promise((resolve, reject) => {
+        client.keys(value,function (err,res) {
+            if (err) {
+                reject(err)
+            }else{
+                resolve(res)
+            }
+        })
+    })
+}
 
 // 导出
 module.exports = {
     client,
+    keys,
     setValue,
     getValue,
     getHValue,
     sadd,
     smembers,
     srandmember,
-    srem
+    srem,
+    del
 }

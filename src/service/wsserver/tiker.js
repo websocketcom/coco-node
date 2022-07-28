@@ -1,56 +1,45 @@
 const redis = require('../../utils/redis/redis_3.0.2/redis')
+const wsService = require('./wsService')
 
 
-const repeat = (func, ms) => {
-    setTimeout(() => {
-        func()
-        repeat(func, ms)
-    }, ms)
-}
+
 const wsCommond = async (ws) => {
-    const chainlist = await redis.smembers('chain').then(res => {
-        return res
-    }).catch(err => {
-        return []
-    })
+    ws.timerCommond = new Object()
+    //检测连接
+    ws.timerCommond.close = setInterval(()=>{
+        wsService.timeOutExpClose(ws)
+        console.log(ws.subList)
+    },3000)
+    //推送kline
 
-    if (chainlist.length <= 0) {
-        return Promise.reject("chain不存在!")
-    }
-    repeat(() => {
-        if (parseInt((new Date()).getTime() / 1000) - ws.timeOutExp > 20) {
-            ws.close()
+    Object.keys(ws.subList).forEach(item=>{
+        let num;
+        switch (item) {
+            case 'kline':
+                num = 2000
+                break
+            case 'ticker':
+                num = 500
+                break
+            case 'depth':
+                num = 500
+                break
+            default:
+                num = 1000
         }
-
-        chainlist.forEach(item => {
-            redis.getValue('klineUpmeta:' + item + ':market.' + item + '.ticker').then(res => {
-                if (res) {
-                    let data = JSON.parse(res, true);
-                    data.type = "ticker"
-                    data.ch = 'market.' + item + '.ticker'
-                    ws.send(JSON.stringify(data, true))
-                }
-            })
-        })
-
-    },2000)
-    repeat(() => {
-        redis.getValue('wsMasrketSub:' + ws.uuid).then(res => {
-            if (res) {
-                let meta = JSON.parse(res)
-                redis.getValue("klineUpmeta:" + meta.chain + ":market." + meta.chain + ".kline." + meta.period).then(res => {
+        ws.timerCommond[ws.timerCommond] = setInterval(()=>{
+            if (ws.subList[item]){
+                redis.getValue(ws.subList[item]).then(res => {
                     if (res) {
-                        let data = JSON.parse(res, true);
-                        data.type = "kline"
-                        data.ch = "market." + meta.chain + ".kline." + meta.period
-                        ws.send(JSON.stringify(data, true))
+                        let meta = JSON.parse(res)
+                        wsService.wsSend(ws, meta, item)
+                    }else {
+                        wsService.wsSend(ws, res, item)
                     }
                 })
             }
-        })
-    },500)
-
-
+        },num)
+    })
 }
 
 
