@@ -75,7 +75,6 @@ const tickerSend = (ws) => {
             redis.keys("ticker:*").then(tickerRes => {
                 tickerRes.forEach((tickerResItem => {
                     redis.getValue(tickerResItem).then(tickerRes => {
-                        console.log(tickerRes)
                         let metaData = JSON.parse(tickerRes)
                         console.log(metaData)
                         wsService.wsSend(ws, metaData, 'ticker')

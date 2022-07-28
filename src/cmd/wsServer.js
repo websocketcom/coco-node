@@ -10,7 +10,7 @@ const wsserver = () => {
     // 启动基于websocket的服务器,监听我们的客户端接入进来。
     var server = new ws.Server({
         host: "127.0.0.1",
-        port: 9999,
+        port: 6812,
     });
 
     server.TimerControl = setInterval(()=>{
