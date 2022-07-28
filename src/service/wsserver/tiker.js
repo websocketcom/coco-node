@@ -83,7 +83,7 @@ const tickerSend = (ws) => {
             })
         } else {
             redis.getValue(ticker).then(tickerRes => {
-                if (res) {
+                if (tickerRes) {
                     let meta = JSON.parse(tickerRes)
                     wsService.wsSend(ws, meta, 'ticker')
                 } else {
