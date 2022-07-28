@@ -69,6 +69,8 @@ const wsCommond = async (ws) => {
 
 const tickerSend = (ws) => {
     let ticker = ws.subList.ticker
+    console.log(ticker)
+
     if (ticker) {
         let tickerData = ticker.split(":")
         if (tickerData[1] == 'all') {
