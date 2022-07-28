@@ -31,7 +31,6 @@ const wsCommond = async (ws) => {
     //检测连接
     ws.timerCommond.close = setInterval(() => {
         wsService.timeOutExpClose(ws)
-        console.log(ws.subList)
     }, 3000)
     //推送kline
 
