@@ -5,7 +5,6 @@ const db = require("../../utils/mysql/Simple/mysql");
 const KlinesSQL = require("../../utils/mysql/modelExamples/model/klines");
 
 const timeOutExpClose = (ws) => {
-    console.log(parseInt((new Date()).getTime() / 10000) - Number(ws.timeOutExp))
     if (parseInt((new Date()).getTime() / 10000) - Number(ws.timeOutExp) > 6) {
         ws.close()
     }
