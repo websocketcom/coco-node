@@ -29,6 +29,7 @@ const kline_message = (data) => {
     redis.setValue( 'kline:' + data.s.toLowerCase() + '_' + data.k.i,JSON.stringify(data.k))
 }
 const ticker_message = (data) => {
+    data.currency = data.currency.replace('USDT','/USDT');
     redis.setValue( 'ticker:' + data.s.toLowerCase(),JSON.stringify(data))
 }
 
