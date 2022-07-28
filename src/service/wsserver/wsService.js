@@ -17,9 +17,9 @@ const wsSend = (ws, data, type = 'msg', code = 200) => {
         code: code,
         data: data
     }
-    // resultData = pako.gzip(btoa(JSON.stringify(resultData, true)), {to: "string"})
-    // ws.send(resultData);
-    ws.send(JSON.stringify(resultData, true));
+    resultData = pako.gzip(btoa(JSON.stringify(resultData, true)), {to: "string"})
+    ws.send(resultData);
+    // ws.send(JSON.stringify(resultData, true));
 }
 
 const wsMasrketSub = (ws, data) => {
