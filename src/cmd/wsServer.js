@@ -1,8 +1,10 @@
 // 加载node上websocket模块 ws;
 const ws = require("ws");
-const wsCommond = require("../service/wsserver/tiker");
+const {wsCommond, ControlTesting} = require("../service/wsserver/tiker");
 const uuidv4 = require('uuid').v4
 const wsService = require('../service/wsserver/wsService')
+
+
 const wsserver = () => {
     wsService.clearHistory()
     // 启动基于websocket的服务器,监听我们的客户端接入进来。
@@ -10,6 +12,10 @@ const wsserver = () => {
         host: "127.0.0.1",
         port: 9999,
     });
+
+    server.TimerControl = setInterval(()=>{
+        ControlTesting()
+    },5000)
 
 // 监听接入进来的客户端事件
     function websocket_add_listener(client_sock) {

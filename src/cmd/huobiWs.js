@@ -23,7 +23,6 @@ const huobiCluster = () => {
                         } else {
                             redis.sadd("chain", chain[now].code).then(res => {
                                 console.log('🐎添加交易对:' + chain[now].code)
-
                                 cluster.fork()
                                 now++
                             })
