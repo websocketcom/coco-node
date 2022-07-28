@@ -100,7 +100,7 @@ const klineControl = (ws) => {
     let smeta = sdata[1].split('_')
     if (smeta[1] != '5m') {
         //非5min 不单控
-        redis.getValue(ws.subList[item]).then(res => {
+        redis.getValue(ws.subList.kline).then(res => {
             if (res) {
                 let meta = JSON.parse(res)
                 wsService.wsSend(ws, meta, 'kline')
