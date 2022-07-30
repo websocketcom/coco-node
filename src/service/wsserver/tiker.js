@@ -38,10 +38,10 @@ const wsCommond = async (ws) => {
         let num;
         switch (item) {
             case 'kline':
-                num = 2000
+                num = 1500
                 break
             case 'ticker':
-                num = 2000
+                num = 1500
                 break
             default:
                 num = 1000
