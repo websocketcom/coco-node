@@ -27,12 +27,12 @@ const trade_message = (data) => {
 const kline_message = (data) => {
     klineHandle(data)
     let klineData = {
-        "t": data.t,
-        "o": data.o,
-        "h": data.h,
-        "l": data.l,
-        "c": data.c,
-        "v": data.v
+        "t": data.k.t,
+        "o": data.k.o,
+        "h": data.k.h,
+        "l": data.k.l,
+        "c": data.k.c,
+        "v": data.k.v
     }
     redis.setValue( 'kline:' + data.s.toLowerCase() + '_' + data.k.i,JSON.stringify(klineData))
 }
