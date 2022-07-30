@@ -24,7 +24,7 @@ const wsSend = (ws, data, type = 'msg', code = 200) => {
 const wsMasrketSub = (ws, data) => {
     let sub = data.sub.split(':')
         if (ws.subList.hasOwnProperty(sub[0])) {
-            if (sub[0] == 'kline') {
+            if (sub[0] == 'kline' || sub[0] == 'history') {
                 let subMeta = sub[1].split('_')
                 db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 500], function (result, fields) {
                     let history = [];
@@ -50,7 +50,9 @@ const wsMasrketSub = (ws, data) => {
                 })
             }
             ////需要判断
-            ws.subList[sub[0]] = data.sub
+            if (sub[0] != 'history'){
+                ws.subList[sub[0]] = data.sub
+            }
             let resultData = {
                 'subed': data.sub,
                 'id': data.id || ''
