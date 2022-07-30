@@ -26,11 +26,23 @@ const trade_message = (data) => {
 }
 const kline_message = (data) => {
     klineHandle(data)
-    redis.setValue( 'kline:' + data.s.toLowerCase() + '_' + data.k.i,JSON.stringify(data.k))
+    redis.setValue( 'kline:' + data.s.toLowerCase() + '_' + data.k.i,JSON.stringify({
+                                                                                        t: klineData.t,
+                                                                                        o: klineData.o,
+                                                                                        h: klineData.h,
+                                                                                        l: klineData.l,
+                                                                                        c: klineData.c,
+                                                                                        v: klineData.v
+                                                                                    }))
 }
 const ticker_message = (data) => {
     data.currency = data.s.replace('USDT','/USDT');
-    redis.setValue( 'ticker:' + data.s.toLowerCase(),JSON.stringify(data))
+    redis.setValue( 'ticker:' + data.s.toLowerCase(),JSON.stringify({
+                                                                        c:data.c,
+                                                                        o:data.o,
+                                                                        p:data.p,
+                                                                        currency:data.currency
+                                                                    }))
 }
 
 const depth_message = (data) => {

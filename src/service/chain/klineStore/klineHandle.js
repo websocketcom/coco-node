@@ -29,11 +29,7 @@ const KlineMetaHanle = async (meta) => {
                                                                                                                      "low"      : item[3],
                                                                                                                      "close"    : item[4],
                                                                                                                      "volume"   : item[5],
-                                                                                                                     "closeTime": item[6],
                                                                                                                      "vol"      : item[7],
-                                                                                                                     "count"    : item[8],
-                                                                                                                     "buyVolume": item[9],
-                                                                                                                     "buyVo"    : item[10]
                                                                                                                  })]
                             })
                             update.sort((a, b) => {
@@ -66,11 +62,7 @@ const KlineMetaHanle = async (meta) => {
                                         "low"      : item[3],
                                         "close"    : item[4],
                                         "volume"   : item[5],
-                                        "closeTime": item[6],
                                         "vol"      : item[7],
-                                        "count"    : item[8],
-                                        "buyVolume": item[9],
-                                        "buyVo"    : item[10]
                                     }
                                     return null
                                 } else {
@@ -81,11 +73,7 @@ const KlineMetaHanle = async (meta) => {
                                                                                                                          "low"      : item[3],
                                                                                                                          "close"    : item[4],
                                                                                                                          "volume"   : item[5],
-                                                                                                                         "closeTime": item[6],
                                                                                                                          "vol"      : item[7],
-                                                                                                                         "count"    : item[8],
-                                                                                                                         "buyVolume": item[9],
-                                                                                                                         "buyVo"    : item[10]
                                                                                                                      })]
                                 }
                             })
@@ -143,11 +131,7 @@ const KlineMetaHanle = async (meta) => {
                             "low"      : item[3],
                             "close"    : item[4],
                             "volume"   : item[5],
-                            "closeTime": item[6],
                             "vol"      : item[7],
-                            "count"    : item[8],
-                            "buyVolume": item[9],
-                            "buyVo"    : item[10]
                         }
                         return null
                     } else {
@@ -158,11 +142,7 @@ const KlineMetaHanle = async (meta) => {
                                                                                                              "low"      : item[3],
                                                                                                              "close"    : item[4],
                                                                                                              "volume"   : item[5],
-                                                                                                             "closeTime": item[6],
                                                                                                              "vol"      : item[7],
-                                                                                                             "count"    : item[8],
-                                                                                                             "buyVolume": item[9],
-                                                                                                             "buyVo"    : item[10]
                                                                                                          })]
                     }
                 })
