@@ -32,6 +32,8 @@ const kline_message = (data) => {
         "h": data.k.h,
         "l": data.k.l,
         "c": data.k.c,
+        "s": data.k.s,
+        "i": data.k.i,
         "v": data.k.v
     }
     redis.setValue( 'kline:' + data.s.toLowerCase() + '_' + data.k.i,JSON.stringify(klineData))
