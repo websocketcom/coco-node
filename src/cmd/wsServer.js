@@ -77,7 +77,7 @@ const wsserver = () => {
 
     server.on("headers", on_server_headers);
 
-    console.log("0.0.0.0:9999")
+    console.log("0.0.0.0:6812")
 }
 
 module.exports = wsserver
