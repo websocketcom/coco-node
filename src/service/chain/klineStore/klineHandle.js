@@ -13,7 +13,7 @@ const KlineMetaHanle = async (meta) => {
     })
     if (!klineStore) {
         try {
-            db.query(KlineSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 1], function (result, fields) {
+            db.query(KlinesSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 1], function (result, fields) {
                 if (result.length > 0) {
                     klineStore = result[0].time
                 }
