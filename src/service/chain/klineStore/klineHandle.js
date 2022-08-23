@@ -38,28 +38,6 @@ const KlineMetaHanle = async (meta) => {
                             if (update.length > 0) {
                                 db.query(KlinesSQL.insert, [update],function (result, fields) {
                                     redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
-                                    db.query(KlinesSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
-                                        let history = [];
-                                        let historyData = {};
-                                        if (result.length > 0){
-                                            result.forEach(item=>{
-                                                let sdata = JSON.parse(item.content)
-                                                historyData[parseInt(sdata.time/1000)]= sdata
-                                            })
-                                        }
-                                        Object.keys(historyData).forEach(item=>{
-                                            history.push(historyData[item])
-                                        })
-                                        history.sort((a,b)=>{
-                                            return parseInt(b.time/1000) - parseInt(a.time/1000)
-                                        })
-                                        let redisData = {
-                                            symbol: subMeta[0],
-                                            interval: subMeta[1],
-                                            data: history
-                                        }
-                                        redis.setValue("history:" + meta.s.toLowerCase() + ":" + meta.k.i, JSON.stringify(redisData))
-                                    });
                                 });
                             }
                         }
@@ -113,28 +91,6 @@ const KlineMetaHanle = async (meta) => {
                             if (update.length > 0) {
                                 db.query(KlinesSQL.insert, [update],function (result, fields) {
                                     redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
-                                    db.query(KlinesSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
-                                        let history = [];
-                                        let historyData = {};
-                                        if (result.length > 0){
-                                            result.forEach(item=>{
-                                                let sdata = JSON.parse(item.content)
-                                                historyData[parseInt(sdata.time/1000)]= sdata
-                                            })
-                                        }
-                                        Object.keys(historyData).forEach(item=>{
-                                            history.push(historyData[item])
-                                        })
-                                        history.sort((a,b)=>{
-                                            return parseInt(b.time/1000) - parseInt(a.time/1000)
-                                        })
-                                        let redisData = {
-                                            symbol: subMeta[0],
-                                            interval: subMeta[1],
-                                            data: history
-                                        }
-                                        redis.setValue("history:" + meta.s.toLowerCase() + ":" + meta.k.i, JSON.stringify(redisData))
-                                    });
                                 });
                             }
 
@@ -195,28 +151,6 @@ const KlineMetaHanle = async (meta) => {
                 if (update.length > 0) {
                     db.query(KlinesSQL.insert, [update],function (result, fields) {
                         redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
-                        db.query(KlinesSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
-                            let history = [];
-                            let historyData = {};
-                            if (result.length > 0){
-                                result.forEach(item=>{
-                                    let sdata = JSON.parse(item.content)
-                                    historyData[parseInt(sdata.time/1000)]= sdata
-                                })
-                            }
-                            Object.keys(historyData).forEach(item=>{
-                                history.push(historyData[item])
-                            })
-                            history.sort((a,b)=>{
-                                return parseInt(b.time/1000) - parseInt(a.time/1000)
-                            })
-                            let redisData = {
-                                symbol: subMeta[0],
-                                interval: subMeta[1],
-                                data: history
-                            }
-                            redis.setValue("history:" + meta.s.toLowerCase() + ":" + meta.k.i, JSON.stringify(redisData))
-                        });
                     });
                 }
                 if (updateHistory) {
