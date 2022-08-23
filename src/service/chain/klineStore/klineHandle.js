@@ -161,7 +161,7 @@ const KlineMetaHanle = async (meta) => {
             console.log(err)
         })
     } else {
-        console.log('暂无kline 更新!' + meta.k.t)
+        // console.log('暂无kline 更新!' + meta.k.t)
     }
 
 }
