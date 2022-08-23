@@ -5,7 +5,7 @@ const unsub_message  = (data, processId) => {
         //写入订阅列表
     } else {
         //将再次订阅
-        console.log(data)
+        console.log('订阅列表')
     }
 }
 const subbed_message = (data) => {
@@ -15,7 +15,6 @@ const subbed_message = (data) => {
     } else {
         //将再次订阅
         console.log("订阅失败:")
-        console.log(data)
     }
 
 }
@@ -55,7 +54,7 @@ const depth_message   = (data) => {
                                                                    }))
 }
 const default_message = (data) => {
-    console.log(data)
+    // console.log(data)
 }
 
 module.exports = {
