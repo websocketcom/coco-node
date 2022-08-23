@@ -1,5 +1,5 @@
 module.exports = {
-    host : '10.10.1.3',
+    host : '10.10.1.1',
     // host : '61.111.129.144',
     port : 3306,//端口号
     database : 'coco',//数据库名
