@@ -26,7 +26,7 @@ const wsMasrketSub = (ws, data) => {
         if (ws.subList.hasOwnProperty(sub[0])) {
             if (sub[0] == 'kline' || sub[0] == 'history') {
                 let subMeta = sub[1].split('_')
-                db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 250], function (result, fields) {
+                db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
                     let history = [];
                     let historyData = {};
                     if (result.length > 0){
@@ -48,6 +48,7 @@ const wsMasrketSub = (ws, data) => {
                     }
                     wsSend(ws, resultData, "history")
                 })
+
             }
             ////需要判断
             if (sub[0] != 'history'){
