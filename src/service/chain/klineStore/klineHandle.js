@@ -20,7 +20,7 @@ const KlineMetaHanle = async (meta) => {
                 if (!klineStore) {
                     tikerHandle(meta.s.toLowerCase(), meta.k.i).then(res => {
                         if (res.length > 0) {
-                            let update = new Array()
+                            let update = []
                             update     = res.map((item) => {
                                 return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, JSON.stringify({
                                                                                                                      "time"     : item[0],
@@ -36,17 +36,18 @@ const KlineMetaHanle = async (meta) => {
                                 return a[0] - b[0]
                             })
                             if (update.length > 0) {
-                                db.query(KlineSQL.insert, [update], function (result, fields) {
+                                db.query(KlinesSQL.insert, [update],function (result, fields) {
                                     redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
                                     redis.setValue("history:" + meta.s.toLowerCase() + ":" + meta.k.i, JSON.stringify(res))
                                 });
-                                db.query(KlinesSQL.insert, [update]);
                             }
                         }
                     }).catch((err) => {
                         console.log(err)
                     })
                 }
+
+
                 if (klineStore && klineStore != parseInt(meta.k.t / 1000).toString()) {
                     tikerHandle(meta.s.toLowerCase(), meta.k.i, (parseInt(klineStore) - periodTime[meta.k.i]).toString() + '000').then(res => {
                         if (res.length > 0) {
@@ -77,6 +78,7 @@ const KlineMetaHanle = async (meta) => {
                                                                                                                      })]
                                 }
                             })
+
                             if (updateData.length > 0) {
                                 updateData.forEach(updateDataItem => {
                                     if (updateDataItem) {
@@ -84,14 +86,13 @@ const KlineMetaHanle = async (meta) => {
                                     }
                                 })
                             }
-                            console.log(update)
+                            update.sort((a, b) => {
+                                return a[0] - b[0]
+                            })
                             if (update.length > 0) {
-                                update.sort((a, b) => {
-                                    return a[0] - b[0]
-                                })
-                                db.query(KlineSQL.insert, [update], function (result, fields) {
+                                db.query(KlinesSQL.insert, [update],function (result, fields) {
                                     redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
-                                    db.query(KlineSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
+                                    db.query(KlinesSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
                                         let redisUpdate = []
                                         if (result.length > 0) {
                                             redisUpdate = result.map((item) => {
@@ -101,8 +102,8 @@ const KlineMetaHanle = async (meta) => {
                                         redis.setValue("history:" + meta.s.toLowerCase() + ":" + meta.k.i, JSON.stringify(redisUpdate))
                                     });
                                 });
-                                db.query(KlinesSQL.insert, [update]);
                             }
+
                             if (updateHistory) {
                                 db.query(KlinesSQL.update, ['55', JSON.stringify(updateHistory), parseInt(updateHistory.time / 1000), meta.s.toLowerCase(), meta.k.i])
                             }
@@ -154,14 +155,13 @@ const KlineMetaHanle = async (meta) => {
                         }
                     })
                 }
-                console.log(update)
                 update.sort((a, b) => {
                     return a[0] - b[0]
                 })
                 if (update.length > 0) {
-                    db.query(KlineSQL.insert, [update], function (result, fields) {
+                    db.query(KlinesSQL.insert, [update],function (result, fields) {
                         redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
-                        db.query(KlineSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
+                        db.query(KlinesSQL.querySymbol, [meta.s.toLowerCase(), meta.k.i, 500], function (result, fields) {
                             let redisUpdate = []
                             if (result.length > 0) {
                                 redisUpdate = result.map((item) => {
@@ -171,7 +171,6 @@ const KlineMetaHanle = async (meta) => {
                             redis.setValue("history:" + meta.s.toLowerCase() + ":" + meta.k.i, JSON.stringify(redisUpdate))
                         });
                     });
-                    db.query(KlinesSQL.insert, [update]);
                 }
 
                 if (updateHistory) {
@@ -182,7 +181,7 @@ const KlineMetaHanle = async (meta) => {
             console.log(err)
         })
     } else {
-        // console.log('暂无kline 更新!' + meta.k.t)
+        console.log('暂无kline 更新!' + meta.k.t)
     }
 
 }

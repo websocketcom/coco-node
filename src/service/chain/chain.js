@@ -41,8 +41,6 @@ const chainListInit = () => {
                 trade:trade
             }
         })
-
-        // console.log(huobidata)
         redis.setValue('huobidata', JSON.stringify(huobidata))
 
     })

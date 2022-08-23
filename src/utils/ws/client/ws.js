@@ -16,7 +16,6 @@ class ConnectWebSocket extends EventEmitter {
         chainInt();
         this.processId = null;
         this.IntervalTimer = null;
-
     }
 
     init() {

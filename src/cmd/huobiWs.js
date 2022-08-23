@@ -46,7 +46,6 @@ const huobiCluster = () => {
                     if (res.length > 0) {
                         redis.sadd("chainSub", res[0]).then(() => {
                             worker.process.chainId = res[0]
-
                             worker.send(res[0]);
                         })
                     }
