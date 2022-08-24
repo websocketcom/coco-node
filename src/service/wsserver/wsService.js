@@ -30,6 +30,7 @@ const wsMasrketSub = async (ws, data) => {
             if (klineHistory){
                 wsSend(ws, JSON.parse(klineHistory), "history")
             }else {
+                console.log('数据:>>>>' + klineHistory)
                 db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
                     let history = [];
                     let historyData = {};
