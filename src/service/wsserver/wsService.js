@@ -27,30 +27,34 @@ const wsMasrketSub = async (ws, data) => {
         if (sub[0] == 'kline' || sub[0] == 'history') {
             let subMeta = sub[1].split('_')
             let klineHistory = await redis.getValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1])
-            console.log(klineHistory)
-            db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
-                let history = [];
-                let historyData = {};
-                if (result.length > 0) {
-                    result.forEach(item => {
-                        let sdata = JSON.parse(item.content)
-                        historyData[parseInt(sdata.time / 1000)] = sdata
+            if (klineHistory){
+                wsSend(ws, klineHistory, "history")
+            }else {
+                db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
+                    let history = [];
+                    let historyData = {};
+                    if (result.length > 0) {
+                        result.forEach(item => {
+                            let sdata = JSON.parse(item.content)
+                            historyData[parseInt(sdata.time / 1000)] = sdata
+                        })
+                    }
+                    Object.keys(historyData).forEach(item => {
+                        history.push(historyData[item])
                     })
-                }
-                Object.keys(historyData).forEach(item => {
-                    history.push(historyData[item])
+                    history.sort((a, b) => {
+                        return parseInt(b.time / 1000) - parseInt(a.time / 1000)
+                    })
+                    let resultData = {
+                        symbol: subMeta[0],
+                        interval: subMeta[1],
+                        data: history
+                    }
+                    wsSend(ws, resultData, "history")
+                    redis.setValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1], JSON.stringify(resultData),60)
                 })
-                history.sort((a, b) => {
-                    return parseInt(b.time / 1000) - parseInt(a.time / 1000)
-                })
-                let resultData = {
-                    symbol: subMeta[0],
-                    interval: subMeta[1],
-                    data: history
-                }
-                wsSend(ws, resultData, "history")
-                redis.setValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1], JSON.stringify(resultData),60)
-            })
+
+            }
 
         }
         ////需要判断
