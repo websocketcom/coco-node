@@ -28,7 +28,7 @@ const wsMasrketSub = async (ws, data) => {
             let subMeta = sub[1].split('_')
             let klineHistory = await redis.getValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1])
             if (klineHistory){
-                wsSend(ws, klineHistory, "history")
+                wsSend(ws, JSON.parse(klineHistory), "history")
             }else {
                 db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
                     let history = [];
