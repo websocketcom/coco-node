@@ -21,11 +21,13 @@ const wsSend = (ws, data, type = 'msg', code = 200) => {
     // ws.send(JSON.stringify(resultData, true));
 }
 
-const wsMasrketSub = (ws, data) => {
+const wsMasrketSub = async (ws, data) => {
     let sub = data.sub.split(':')
     if (ws.subList.hasOwnProperty(sub[0]) || sub[0] == 'history') {
         if (sub[0] == 'kline' || sub[0] == 'history') {
             let subMeta = sub[1].split('_')
+            let klineHistory = await redis.getValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1])
+            console.log(klineHistory)
             db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
                 let history = [];
                 let historyData = {};
