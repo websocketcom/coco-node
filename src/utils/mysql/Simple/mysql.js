@@ -4,7 +4,7 @@ var databaseConfig = require('../../../config/mysqlConfigsimple');  //引入数�
 //向外暴露方法
 module.exports = {
     query : function(sql,params,callback){
-        console.log(sql)
+        // console.log(sql)
         //每次使用的时候需要创建链接，数据操作完成之后要关闭连接
         var connection = mysql.createConnection(databaseConfig);
         connection.connect(function(err){
