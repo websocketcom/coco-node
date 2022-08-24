@@ -1,4 +1,4 @@
-const redis  = require('../../utils/redis/redis_3.0.2/redis')
+const redis = require('../../utils/redis/redis_3.0.2/redis')
 const {btoa} = require('buffer')
 const pako = require('pako')
 const db = require("../../utils/mysql/Simple/mysql");
@@ -23,65 +23,66 @@ const wsSend = (ws, data, type = 'msg', code = 200) => {
 
 const wsMasrketSub = (ws, data) => {
     let sub = data.sub.split(':')
-        if (ws.subList.hasOwnProperty(sub[0])) {
-            if (sub[0] == 'kline' || sub[0] == 'history') {
-                let subMeta = sub[1].split('_')
-                db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
-                    let history = [];
-                    let historyData = {};
-                    if (result.length > 0){
-                        result.forEach(item=>{
-                            let sdata = JSON.parse(item.content)
-                            historyData[parseInt(sdata.time/1000)]= sdata
-                        })
-                    }
-                    Object.keys(historyData).forEach(item=>{
-                        history.push(historyData[item])
+    if (ws.subList.hasOwnProperty(sub[0]) || sub[0] == 'history') {
+        if (sub[0] == 'kline' || sub[0] == 'history') {
+            let subMeta = sub[1].split('_')
+            db.query(KlinesSQL.querySymbol, [subMeta[0].toLowerCase(), subMeta[1], 400], function (result, fields) {
+                let history = [];
+                let historyData = {};
+                if (result.length > 0) {
+                    result.forEach(item => {
+                        let sdata = JSON.parse(item.content)
+                        historyData[parseInt(sdata.time / 1000)] = sdata
                     })
-                    history.sort((a,b)=>{
-                        return parseInt(b.time/1000) - parseInt(a.time/1000)
-                    })
-                    let resultData = {
-                        symbol: subMeta[0],
-                        interval: subMeta[1],
-                        data: history
-                    }
-                    wsSend(ws, resultData, "history")
+                }
+                Object.keys(historyData).forEach(item => {
+                    history.push(historyData[item])
                 })
+                history.sort((a, b) => {
+                    return parseInt(b.time / 1000) - parseInt(a.time / 1000)
+                })
+                let resultData = {
+                    symbol: subMeta[0],
+                    interval: subMeta[1],
+                    data: history
+                }
+                wsSend(ws, resultData, "history")
+                redis.setValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1], JSON.stringify(resultData),60)
+            })
 
-            }
-            ////需要判断
-            if (sub[0] != 'history'){
-                ws.subList[sub[0]] = data.sub
-            }
-            let resultData = {
-                'subed': data.sub,
-                'id': data.id || ''
-            }
-            wsSend(ws, resultData, "subed")
         }
+        ////需要判断
+        if (sub[0] != 'history') {
+            ws.subList[sub[0]] = data.sub
+        }
+        let resultData = {
+            'subed': data.sub,
+            'id': data.id || ''
+        }
+        wsSend(ws, resultData, "subed")
+    }
 }
 
 const wsMasrketUnsub = (ws, data) => {
     let unsub = data.unsub.split(':')
-    if (ws.subList.hasOwnProperty(unsub[0]) && ws.subList[unsub[0]]){
+    if (ws.subList.hasOwnProperty(unsub[0]) && ws.subList[unsub[0]]) {
         ws.subList[unsub[0]] = null
         let resultData = {
             'unsubed': data.unsub,
-            'id'   : data.id || '',
+            'id': data.id || '',
         }
-        wsSend(ws,resultData,"unsubed")
-    }else {
+        wsSend(ws, resultData, "unsubed")
+    } else {
         let resultData = {
             'unsubed': data.unsub,
-            'id'   : data.id || '',
-            'msg'    : 'Wrong cancellation!'
+            'id': data.id || '',
+            'msg': 'Wrong cancellation!'
         }
-        wsSend(ws,resultData,"unsubed",10003)
+        wsSend(ws, resultData, "unsubed", 10003)
     }
 }
 
-const removeSub    = (key) => {
+const removeSub = (key) => {
     redis.del('wsMemberSub:' + key)
 }
 const clearHistory = () => {
@@ -93,11 +94,11 @@ const clearHistory = () => {
         }
     })
 }
-module.exports     = {
-    wsMasrketSub   : wsMasrketSub,
-    wsMasrketUnsub : wsMasrketUnsub,
+module.exports = {
+    wsMasrketSub: wsMasrketSub,
+    wsMasrketUnsub: wsMasrketUnsub,
     timeOutExpClose: timeOutExpClose,
-    removeSub      : removeSub,
-    clearHistory   : clearHistory,
-    wsSend:wsSend
+    removeSub: removeSub,
+    clearHistory: clearHistory,
+    wsSend: wsSend
 }
