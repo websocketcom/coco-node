@@ -1,8 +1,5 @@
 const redis       = require('../../utils/redis/redis_3.0.2/redis')
 const wsService   = require('./wsService')
-const db          = require("../../utils/mysql/Simple/mysql");
-const contronlSQL = require("../../utils/mysql/modelExamples/model/contronl");
-const currency    = require('../../utils/mysql/modelExamples/model/currency')
 
 const wsCommond = async (ws) => {
     ws.timerCommond       = new Object()
@@ -44,7 +41,6 @@ const wsCommond = async (ws) => {
         }, num)
     })
 }
-
 const tickerSend = (ws) => {
     let ticker = ws.subList.ticker
     if (ticker) {
@@ -70,7 +66,6 @@ const tickerSend = (ws) => {
         }
     }
 }
-
 const klineControl = (ws) => {
     let sub   = ws.subList.kline
     let sdata = sub.split(':')
