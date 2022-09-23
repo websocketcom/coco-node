@@ -97,41 +97,28 @@ const tickerSend = (ws) => {
 const klineControl = (ws) => {
     let sub   = ws.subList.kline
     let sdata = sub.split(':')
-    let smeta = sdata[1].split('_')
-    if (smeta[1] != '5m') {
-        //非5min 不单控
-        redis.getValue(ws.subList.kline).then(res => {
-            if (res) {
-                let meta = JSON.parse(res)
-                wsService.wsSend(ws, meta, 'kline')
-            } else {
-                wsService.wsSend(ws, res, 'kline')
-            }
-        })
-    } else {
-        //5min 单控
-        redis.getValue('contronl:' + sdata[1]).then(res => {
-            if (res) {
-                redis.getValue('klines:' + sdata[1]).then(klinesRes => {
-                    if (klinesRes) {
-                        let meta = JSON.parse(klinesRes)
-                        wsService.wsSend(ws, meta, 'kline')
-                    } else {
-                        wsService.wsSend(ws, klinesRes, 'kline')
-                    }
-                })
-            } else {
-                redis.getValue(sub).then(klinesRes => {
-                    if (klinesRes) {
-                        let meta = JSON.parse(klinesRes)
-                        wsService.wsSend(ws, meta, 'kline')
-                    } else {
-                        wsService.wsSend(ws, klinesRes, 'kline')
-                    }
-                })
-            }
-        })
-    }
+    let key = 'iscontrol:' + smeta
+    redis.getValue(key).then(res => {
+        if (res) {
+            redis.getValue('klines:' + sdata[1]).then(klinesRes => {
+                if (klinesRes) {
+                    let meta = JSON.parse(klinesRes)
+                    wsService.wsSend(ws, meta, 'kline')
+                } else {
+                    wsService.wsSend(ws, klinesRes, 'kline')
+                }
+            })
+        } else {
+            redis.getValue(sub).then(klinesRes => {
+                if (klinesRes) {
+                    let meta = JSON.parse(klinesRes)
+                    wsService.wsSend(ws, meta, 'kline')
+                } else {
+                    wsService.wsSend(ws, klinesRes, 'kline')
+                }
+            })
+        }
+    })
 }
 
 module.exports = {
