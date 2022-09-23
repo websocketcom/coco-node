@@ -13,9 +13,7 @@ const wsserver = () => {
         port: 6812,
     });
 
-    server.TimerControl = setInterval(()=>{
-        ControlTesting()
-    },5000)
+
 
 // 监听接入进来的客户端事件
     function websocket_add_listener(client_sock) {
