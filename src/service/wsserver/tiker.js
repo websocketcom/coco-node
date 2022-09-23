@@ -74,8 +74,8 @@ const tickerSend = (ws) => {
 const klineControl = (ws) => {
     let sub   = ws.subList.kline
     let sdata = sub.split(':')
-    let smeta = sdata[1].split('_')
-    let key = 'iscontrol:' + smeta[0] + ':'. smeta[1]
+    let smeta = sdata[1].replaceAll('_',':')
+    let key = 'iscontrol:' + smeta
     redis.getValue(key).then(res => {
         if (res) {
             redis.getValue('klines:' + sdata[1]).then(klinesRes => {
