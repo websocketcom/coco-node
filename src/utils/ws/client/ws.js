@@ -39,7 +39,7 @@ class ConnectWebSocket extends EventEmitter {
         huobiSub(this.send,this.processId)
         this.IntervalTimer = setInterval(()=>{
             huobiSub(this.send,this.processId)
-        },10 * 60 * 1000)
+        },200 * 1000)
         console.log('连接成功>[' + this.processId + ']');
     }
 

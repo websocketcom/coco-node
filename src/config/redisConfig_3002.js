@@ -1,6 +1,5 @@
 const options = {
     host: '10.190.0.3',
-    // host: '61.111.129.144',
     port: 6379,
     password: '123456',
     db: 2,
