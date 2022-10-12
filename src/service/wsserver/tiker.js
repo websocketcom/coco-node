@@ -1,5 +1,32 @@
 const redis       = require('../../utils/redis/redis_3.0.2/redis')
 const wsService   = require('./wsService')
+const db          = require("../../utils/mysql/Simple/mysql");
+const dbTwo          = require("../../utils/mysql/Simple/mysql2");
+const contronlSQL = require("../../utils/mysql/modelExamples/model/contronl");
+const currency    = require('../../utils/mysql/modelExamples/model/currency')
+
+const ControlTesting = () => {
+    let nowTime = parseInt((new Date()).getTime() / 1000);
+    dbTwo.query(contronlSQL.queryAll, [nowTime, nowTime], function (contronlResult, fields) {
+        if (contronlResult.length) {
+            db.query(currency.queryAll, ['1'], function (currencyResult, fields) {
+                if (currencyResult.length > 0) {
+                    currencyResult.forEach(currencyItem => {
+                        contronlResult.forEach(contronlItem => {
+                            if (currencyItem.id == contronlItem.cid) {
+                                let code       = currencyItem.title.replace('/', '').toLowerCase()
+                                let expireTime = parseInt(contronlItem.end_time) - nowTime
+                                redis.setValue('contronl:' + code + '_' + contronlItem.type, contronlItem.end_time.toString(), expireTime + 6)
+                            }
+                        })
+                    })
+                }
+            });
+        }
+    })
+}
+
+
 const wsCommond = async (ws) => {
     ws.timerCommond       = new Object()
     //检测连接
@@ -70,6 +97,7 @@ const tickerSend = (ws) => {
 const klineControl = (ws) => {
     let sub   = ws.subList.kline
     let sdata = sub.split(':')
+    let smeta = sdata[1].replaceAll('_',':')
     let key = 'iscontrol:' + smeta
     redis.getValue(key).then(res => {
         if (res) {
@@ -92,6 +120,7 @@ const klineControl = (ws) => {
             })
         }
     })
+
 }
 
 module.exports = {

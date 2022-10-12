@@ -10,6 +10,15 @@ const timeOutExpClose = (ws) => {
     }
 }
 
+const cycle = {
+    '1m':45,
+    '5m':240,
+    '15m':600,
+    '30m':1200,
+    '1h':2400,
+    '1d':5000,
+}
+
 const wsSend = (ws, data, type = 'msg', code = 200) => {
     let resultData = {
         type: type,
@@ -52,7 +61,7 @@ const wsMasrketSub = async (ws, data) => {
                         data: history
                     }
                     wsSend(ws, resultData, "history")
-                    redis.setValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1], JSON.stringify(resultData),60)
+                    redis.setValue("klineHistory:" + subMeta[0].toLowerCase() + '_' + subMeta[1], JSON.stringify(resultData),cycle[subMeta[1]])
                 })
 
             }
