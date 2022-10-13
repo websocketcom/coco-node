@@ -99,5 +99,4 @@ const klineControl = (ws) => {
 
 module.exports = {
     wsCommond     : wsCommond,
-    ControlTesting: ControlTesting
 }
