@@ -1,11 +1,12 @@
+let dotenv =  require('dotenv');
+dotenv.config('.env');
 const sade = require('sade');
 const prog = sade('nodechain');
 const  chainInt = require('./src/cmd/huobiWs')
 const  wsServer = require('./src/cmd/wsServer')
 const  ipAuthorize = require('./src/utils/authorize/ipAuthorize').ipAuthorize
 const version = '1.0.1';
-let dotenv =  require('dotenv');
-dotenv.config('.env');
+
 prog.version(`v${version}. Copyright 2021 Kaadon.`)
     .describe(`nodechain v${version}. Copyright 2021 Kaadon`);
 
