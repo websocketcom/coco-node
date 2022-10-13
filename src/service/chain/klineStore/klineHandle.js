@@ -36,6 +36,7 @@ const KlineMetaHanle = async (meta) => {
                                 return a[0] - b[0]
                             })
                             if (update.length > 0) {
+                                console.log(update)
                                 db.query(KlinesSQL.insert, [update],function (result, fields) {
                                     redis.setValue("klineStore:" + meta.s.toLowerCase() + '_' + meta.k.i, parseInt(meta.k.t / 1000).toString())
                                 });
