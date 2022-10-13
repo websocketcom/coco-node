@@ -1,6 +1,6 @@
 // 加载node上websocket模块 ws;
 const ws = require("ws");
-const {wsCommond, ControlTesting} = require("../service/wsserver/tiker");
+const {wsCommond} = require("../service/wsserver/tiker");
 const uuidv4 = require('uuid').v4
 const wsService = require('../service/wsserver/wsService')
 
