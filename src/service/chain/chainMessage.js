@@ -24,7 +24,6 @@ const trade_message  = (data) => {
     redis.setValue('trade:' + data.s.toLowerCase(), JSON.stringify(data))
 }
 const kline_message  = (data) => {
-    klineHandle(data)
     let klineData = {
         "t": data.k.t,
         "o": data.k.o,
