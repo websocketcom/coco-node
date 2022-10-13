@@ -1,3 +1,2 @@
-const chainDb = require('./src/service/chain/chainDb')
-
-chainDb().then(console.log)
+let mysql = require('./src/config/mysqlConfigsimple')
+console.log(mysql)
