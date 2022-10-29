@@ -4,17 +4,12 @@ const http = require('http')
 const server = http.createServer(app)
 const io = require('./src/socket.io/server')(server)
 
-
-
-// 处理 HTTP 协议的使用 Express 的 app 实例
-
-
-
 setInterval(()=>{
     io.emit('recive',JSON.stringify({'time' :(new Date()).getTime()}))
 },2000)
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    await io.emit('PushAll',JSON.stringify({type:"",data:{}}))
     res.json({"code":200,"data":{},"msg":""})
 })
 

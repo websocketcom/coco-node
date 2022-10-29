@@ -1,6 +1,5 @@
 const redis = require('redis')
 const redisOptions = require('../../../config/redisConfig_3002')
-
 const options = {
     host: redisOptions.host,
     port: redisOptions.port,

@@ -42,31 +42,7 @@ const wsCommond = async (ws) => {
     })
 }
 
-const tickerSend = (ws) => {
-    let ticker = ws.subList.ticker
-    if (ticker) {
-        let tickerData = ticker.split(":")
-        if (tickerData[1] == 'all') {
-            redis.keys("ticker:*").then(tickerRes => {
-                tickerRes.forEach((tickerResItem => {
-                    redis.getValue(tickerResItem).then(tickerResItemRes => {
-                        let metaData = JSON.parse(tickerResItemRes)
-                        wsService.wsSend(ws, metaData, 'ticker')
-                    })
-                }))
-            })
-        } else {
-            redis.getValue(ticker).then(tickerRes => {
-                if (tickerRes) {
-                    let meta = JSON.parse(tickerRes)
-                    wsService.wsSend(ws, meta, 'ticker')
-                } else {
-                    wsService.wsSend(ws, tickerRes, 'ticker')
-                }
-            })
-        }
-    }
-}
+
 
 const klineControl = (ws) => {
     let sub   = ws.subList.kline
@@ -94,7 +70,6 @@ const klineControl = (ws) => {
             })
         }
     })
-
 }
 
 module.exports = {
