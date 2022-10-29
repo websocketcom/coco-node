@@ -12,7 +12,7 @@ const socketServer = () => {
 
     setInterval(() => {
         socketPush.tickerSend(io)
-        socketPush.klineSend(io)
+        // socketPush.klineSend(io)
     }, 1000)
 
     app.get('/', async (req, res) => {
