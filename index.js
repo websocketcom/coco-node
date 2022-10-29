@@ -4,6 +4,7 @@ const sade = require('sade');
 const prog = sade('nodechain');
 const  chainInt = require('./src/cmd/huobiWs')
 const  wsServer = require('./src/cmd/wsServer')
+const  socketServer = require('./src/cmd/socketIo')
 const  ipAuthorize = require('./src/utils/authorize/ipAuthorize').ipAuthorize
 const version = '1.0.1';
 
@@ -29,6 +30,12 @@ prog.command('ws')
     .action(() => {
         wsServer()
 
+    });
+
+prog.command('io')
+    .describe('io server')
+    .action(() => {
+        socketServer()
     });
 
 
