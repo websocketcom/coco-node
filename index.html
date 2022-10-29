@@ -1,0 +1,28 @@
+<!-- 消息列表 -->
+<ul id="messages"></ul>
+<!-- 发送消息的表单 -->
+<form id="form" action="">
+  <input id="input" autocomplete="off"/>
+  <button>Send</button>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js"
+        integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  const socket = io('ws://localhost:12345')
+  socket.on('connect', () => {
+    console.log('客户端连接成功')
+  })
+  socket.on('recive', console.log)
+  socket.on('disconnect', reason => {
+    if (reason === 'io server disconnect') {
+      console.log('服务器断开连接，手动尝试重连')
+      socket.connect()
+    } else {
+      console.log('连接断开')
+    }
+  })
+  socket.on('connect_error', () => {
+    console.log('连接失败')
+  })
+</script>
