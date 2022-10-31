@@ -24,10 +24,7 @@ const trade_message  = (data) => {
     redis.setValue('trade:' + data.s.toLowerCase(), JSON.stringify(data))
 }
 const kline_message  = (data) => {
-    redis.setValue('time:' + data.s.toLowerCase() + '_' + data.k.i,(new Date()).getTime())
-    setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err=>{
-        console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@"+data.k.i+">>" + err.message)
-    })
+
     let klineData = {
         "t": data.k.t,
         "o": data.k.o,
@@ -39,6 +36,10 @@ const kline_message  = (data) => {
         "v": data.k.v
     }
     redis.setValue('kline:' + data.s.toLowerCase() + '_' + data.k.i, JSON.stringify(klineData))
+    redis.setValue('time:' + data.s.toLowerCase() + '_' + data.k.i,(new Date()).getTime())
+    setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err=>{
+        console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@"+data.k.i+">>" + err.message)
+    })
 }
 const ticker_message = (data) => {
     data.currency = data.s.replace('USDT', '/USDT');
