@@ -15,7 +15,7 @@ const socketIo = (server) => {
             console.log(data)
             try{
                 let meta  = JSON.parse(data.toString());
-                if (meta.isArray() && meta.hasOwnProperty('type')){
+                if (meta.hasOwnProperty('type')){
                     switch (meta.type){
                         case 'History':
                             // klineHistory:apeusdt:1m
