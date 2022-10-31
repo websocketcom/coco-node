@@ -48,14 +48,14 @@ const setValue = (key, value, expire = null) => {
 // 存储值
 const setnx = (key, expire = 10) => {
     return new Promise((resolve, reject) => {
-        client.setnx(key, key,function (err,res) {
-            if (err){
+        client.setnx(key, key, function (err, res) {
+            if (err) {
                 reject(new Error(err))
-            }else {
-                if (res){
+            } else {
+                if (res) {
                     client.expire(key, parseInt(expire))
                     resolve(true)
-                }else {
+                } else {
                     resolve(false)
                 }
             }
@@ -188,8 +188,8 @@ const zrevrangebyscore = (args) => {
             } else {
                 var data = new Array()
                 if (rangeResponse.length > 0) {
-                    for (var i = 1;i<=rangeResponse.length;i+=2){
-                        data.push(JSON.parse(rangeResponse[i-1],true))
+                    for (var i = 1; i <= rangeResponse.length; i += 2) {
+                        data.push(JSON.parse(rangeResponse[i - 1], true))
                     }
                 }
                 resolve(data)
