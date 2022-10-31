@@ -61,7 +61,6 @@ const setKlineHistory = async (symbol, period) => {
     var KlineData = null;
     var lock = true;
     try {
-
         countHandleData = await countHandle(symbol, period)
         if (countHandleData && countHandleData.hasOwnProperty('have')) {
             lock = await redis.setnx("lock:setKlineHistory:" + symbol + ":" + period)

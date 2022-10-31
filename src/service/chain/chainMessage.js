@@ -24,6 +24,7 @@ const trade_message  = (data) => {
     redis.setValue('trade:' + data.s.toLowerCase(), JSON.stringify(data))
 }
 const kline_message  = (data) => {
+    redis.setValue('time:' + data.s.toLowerCase() + '_' + data.k.i,(new Date()).getTime())
     setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err=>{
         console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@"+data.k.i+">>" + err.message)
     })
