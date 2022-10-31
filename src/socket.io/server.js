@@ -19,7 +19,7 @@ const socketIo = (server) => {
                     switch (meta.type){
                         case 'History':
                             // klineHistory:apeusdt:1m
-                            var arg = ["klineHistory:" . meta.sub.replace('@',':'),"+inf",(meta.hasOwnProperty('startTime')?meta.startTime:"-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit')?meta.limit:500)]
+                            var arg = ["klineHistory:" + meta.sub.replace('@',':'),"+inf",(meta.hasOwnProperty('startTime')?meta.startTime:"-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit')?meta.limit:500)]
                             redis.zrevrangebyscore(arg).then(res=>{
                                 console.log(res)
                                 socket.emit('History',JSON.stringify(res))
