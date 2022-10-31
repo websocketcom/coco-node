@@ -12,6 +12,7 @@ const socketIo = (server) => {
     io.on('connection', socket => {
         ioList.push(socket.id)
         socket.on('getPush', (data) => {
+            console.log(data)
             try{
                 let meta  = JSON.parse(data.toString());
                 if (meta.isArray() && meta.hasOwnProperty('type')){
@@ -20,6 +21,7 @@ const socketIo = (server) => {
                             // klineHistory:apeusdt:1m
                             var arg = ["klineHistory:" . meta.sub.replace('@',':'),"+inf",(meta.hasOwnProperty('startTime')?meta.startTime:"-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit')?meta.limit:500)]
                             redis.zrevrangebyscore(arg).then(res=>{
+                                console.log(res)
                                 socket.emit('History',JSON.stringify(res))
                             })
                         default:
