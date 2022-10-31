@@ -1,6 +1,7 @@
-const redis          = require('../../utils/redis/redis_3.0.2/redis')
-const setKlineHistory    = require('./klineStore/setKlineHistory')
-const unsub_message  = (data, processId) => {
+const redis = require('../../utils/redis/redis_3.0.2/redis')
+const redis2 = require('../../utils/redis/redis_3.0.2/redis')
+const setKlineHistory = require('./klineStore/setKlineHistory')
+const unsub_message = (data, processId) => {
     if (data.status == "ok") {
         //写入订阅列表
     } else {
@@ -20,10 +21,10 @@ const subbed_message = (data) => {
 }
 
 
-const trade_message  = (data) => {
+const trade_message = (data) => {
     redis.setValue('trade:' + data.s.toLowerCase(), JSON.stringify(data))
 }
-const kline_message  = (data) => {
+const kline_message = async (data) => {
 
     let klineData = {
         "t": data.k.t,
@@ -35,38 +36,39 @@ const kline_message  = (data) => {
         "i": data.k.i,
         "v": data.k.v
     }
-    redis.setValue('kline:' + data.s.toLowerCase() + '_' + data.k.i, JSON.stringify(klineData))
-    redis.setValue('klinetime:' + data.s.toLowerCase() + '_' + data.k.i,(new Date()).getTime())
-    setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err=>{
-        console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@"+data.k.i+">>" + err.message)
+    await redis.setValue('kline:' + data.s.toLowerCase() + '_' + data.k.i, JSON.stringify(klineData))
+
+    await setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err => {
+        console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@" + data.k.i + ">>" + err.message)
     })
+    await redis.setValue('klinetime:' + data.s.toLowerCase() + '_' + data.k.i, (new Date()).getTime())
 }
 const ticker_message = (data) => {
     data.currency = data.s.replace('USDT', '/USDT');
     redis.setValue('ticker:' + data.s.toLowerCase(), JSON.stringify({
-                                                                        "c"       : data.c,
-                                                                        "o"       : data.o,
-                                                                        "p"       : data.p,
-                                                                        "currency": data.currency
-                                                                    }))
+        "c": data.c,
+        "o": data.o,
+        "p": data.p,
+        "currency": data.currency
+    }))
 }
 
-const depth_message   = (data) => {
+const depth_message = (data) => {
     redis.setValue('depth:' + data.s.toLowerCase(), JSON.stringify({
-                                                                       b: data.b,
-                                                                       a: data.a
-                                                                   }))
+        b: data.b,
+        a: data.a
+    }))
 }
 const default_message = (data) => {
     // console.log(data)
 }
 
 module.exports = {
-    trade_message : trade_message,
-    kline_message : kline_message,
+    trade_message: trade_message,
+    kline_message: kline_message,
     ticker_message: ticker_message,
-    depth_message : depth_message,
-    unsub         : unsub_message,
-    subbed        : subbed_message,
-    default       : default_message
+    depth_message: depth_message,
+    unsub: unsub_message,
+    subbed: subbed_message,
+    default: default_message
 }
