@@ -1,5 +1,5 @@
 const redis          = require('../../utils/redis/redis_3.0.2/redis')
-const klineHandle    = require('./klineStore/klineHandle')
+const setKlineHistory    = require('./klineStore/setKlineHistory')
 const unsub_message  = (data, processId) => {
     if (data.status == "ok") {
         //写入订阅列表
@@ -24,7 +24,9 @@ const trade_message  = (data) => {
     redis.setValue('trade:' + data.s.toLowerCase(), JSON.stringify(data))
 }
 const kline_message  = (data) => {
-    klineHandle(data)
+    setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err=>{
+        console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@"+data.k.i+">>" + err.message)
+    })
     let klineData = {
         "t": data.k.t,
         "o": data.k.o,

@@ -1,18 +1,28 @@
-const express = require('express')
-const app = express()
-const http = require('http')
-const server = http.createServer(app)
-const io = require('./src/socket.io/server')(server)
+var cluster = require('cluster');
+function eachWorker(cluster,callback) {
+    for (var id in cluster.workers) {
+        callback(cluster.workers[id]);
+    }
+}
+if(cluster.isMaster) {
+    var numWorkers = require('os').cpus().length;
+    console.log('Master cluster setting up ' + numWorkers + ' workers...');
+    for(var i = 0; i < 2; i++) {
+        cluster.fork({MM: (new  Date()).getTime()});
+    }
+    cluster.on('online', function(worker) {
+        console.log('Worker ' + worker.process.pid + ' is online');
+    });
+    cluster.on('exit', function(worker, code, signal) {
+        console.log(worker.process.chainId);
+    });
+}
 
-setInterval(()=>{
-    io.emit('recive',JSON.stringify({'time' :(new Date()).getTime()}))
-},2000)
+if (cluster.isWorker){
+    worker.process.chainId = process.pid
+    setTimeout(()=>{
+        throw new Error(5555)
+    },5000)
+}
 
-app.get('/', async (req, res) => {
-    await io.emit('PushAll',JSON.stringify({type:"",data:{}}))
-    res.json({"code":200,"data":{},"msg":""})
-})
 
-server.listen(12345, () => {
-    console.log('listening on *:12345')
-})

@@ -3,7 +3,7 @@ const fetch = require('../../../utils/http/axios').fetch// create instance
 
 const tikerHandle = async (symbol, period,startTime = null, endTime = null,size = 500, ) => {
     let ticker = null
-    let err    = null
+    let error    = null
     let update = {
         "limit"   : size,
         "interval": period,
@@ -18,10 +18,11 @@ const tikerHandle = async (symbol, period,startTime = null, endTime = null,size 
     await fetch('/api/v3/klines',update).then(res => {
         ticker = res
     }).catch(err => {
+        error = err
         console.log(err)
     })
-    if (err) {
-        return Promise.reject(err)
+    if (error) {
+        return Promise.reject(new Error(error))
     }
     return Promise.resolve(ticker)
 }

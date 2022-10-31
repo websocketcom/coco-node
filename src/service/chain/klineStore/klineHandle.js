@@ -22,15 +22,17 @@ const KlineMetaHanle = async (meta) => {
                         if (res.length > 0) {
                             let update = []
                             update     = res.map((item) => {
-                                return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, JSON.stringify({
-                                                                                                                     "time"     : item[0],
-                                                                                                                     "open"     : item[1],
-                                                                                                                     "high"     : item[2],
-                                                                                                                     "low"      : item[3],
-                                                                                                                     "close"    : item[4],
-                                                                                                                     "volume"   : item[5],
-                                                                                                                     "vol"      : item[7],
-                                                                                                                 })]
+                                var Sdata = JSON.stringify({
+                                    "time"     : item[0],
+                                    "open"     : item[1],
+                                    "high"     : item[2],
+                                    "low"      : item[3],
+                                    "close"    : item[4],
+                                    "volume"   : item[5],
+                                    "vol"      : item[7],
+                                })
+                                redis.zadd(['klineHistory:'+ meta.s.toLowerCase()  + ':' + meta.k.i,parseInt(item[0] / 1000),Sdata] )
+                                return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, Sdata]
                             })
                             update.sort((a, b) => {
                                 return a[0] - b[0]
@@ -66,18 +68,19 @@ const KlineMetaHanle = async (meta) => {
                                     }
                                     return null
                                 } else {
-                                    return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, JSON.stringify({
-                                                                                                                         "time"     : item[0],
-                                                                                                                         "open"     : item[1],
-                                                                                                                         "high"     : item[2],
-                                                                                                                         "low"      : item[3],
-                                                                                                                         "close"    : item[4],
-                                                                                                                         "volume"   : item[5],
-                                                                                                                         "vol"      : item[7],
-                                                                                                                     })]
+                                    var Sdata = JSON.stringify({
+                                        "time"     : item[0],
+                                        "open"     : item[1],
+                                        "high"     : item[2],
+                                        "low"      : item[3],
+                                        "close"    : item[4],
+                                        "volume"   : item[5],
+                                        "vol"      : item[7],
+                                    })
+                                    redis.zadd(['klineHistory:'+ meta.s.toLowerCase()  + ':' + meta.k.i,parseInt(item[0] / 1000),Sdata] )
+                                    return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, Sdata]
                                 }
                             })
-
                             if (updateData.length > 0) {
                                 updateData.forEach(updateDataItem => {
                                     if (updateDataItem) {
@@ -126,18 +129,19 @@ const KlineMetaHanle = async (meta) => {
                         }
                         return null
                     } else {
-                        return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, JSON.stringify({
-                                                                                                             "time"     : item[0],
-                                                                                                             "open"     : item[1],
-                                                                                                             "high"     : item[2],
-                                                                                                             "low"      : item[3],
-                                                                                                             "close"    : item[4],
-                                                                                                             "volume"   : item[5],
-                                                                                                             "vol"      : item[7],
-                                                                                                         })]
+                        var Sdata = JSON.stringify({
+                            "time"     : item[0],
+                            "open"     : item[1],
+                            "high"     : item[2],
+                            "low"      : item[3],
+                            "close"    : item[4],
+                            "volume"   : item[5],
+                            "vol"      : item[7],
+                        })
+                        redis.zadd(['klineHistory:'+ meta.s.toLowerCase()  + ':' + meta.k.i,parseInt(item[0] / 1000),Sdata] )
+                        return [parseInt(item[0] / 1000), meta.s.toLowerCase(), meta.k.i, Sdata]
                     }
                 })
-
                 if (updateData.length > 0) {
                     updateData.forEach(updateDataItem => {
                         if (updateDataItem) {

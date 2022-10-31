@@ -1,6 +1,8 @@
 const cluster = require('cluster');
 const chainDb = require('../service/chain/chainDb');
 const setIntervalTimer = require('../service/chain/setIntervalTimeChain');
+const redis = require("../utils/redis/redis_3.0.2/redis");
+const connect = require("../utils/ws/client/ws");
 const huobiCluster = () => {
 
     if (cluster.isMaster) {
@@ -23,7 +25,7 @@ const huobiCluster = () => {
                         } else {
                             redis.sadd("chain", chain[now].code).then(res => {
                                 console.log('🐎添加交易对:' + chain[now].code)
-                                cluster.fork({chainId:chain[now].code})
+                                cluster.fork()
                                 now++
                             })
 
@@ -47,6 +49,9 @@ const huobiCluster = () => {
                     if (res.length > 0) {
                         redis.sadd("chainSub", res[0]).then(() => {
                             worker.process.chainId = res[0]
+                            setTimeout(()=>{
+                                throw new Error(555)
+                            },2000)
                             worker.send(res[0]);
                         })
                     }
@@ -57,12 +62,7 @@ const huobiCluster = () => {
         setIntervalTimer()
     } else if (cluster.isWorker) {
         const connect = require('../utils/ws/client/ws')// create instance
-        process.on('message', (msg) => {
-            console.log("开始币种:" + msg)
-            console.log("开始币种PID:" + process.pid)
-            connect(msg)
-            console.log(cluster.worker.process.pid + "开启火币ws交易对:" + msg,)
-        });
+        connect(msg)
     }
 }
 

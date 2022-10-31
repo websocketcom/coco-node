@@ -35,14 +35,34 @@ const setValue = (key, value, expire = null) => {
 
     if (typeof value === 'string') {
         client.set(key, value)
-        if (expire && parseInt(expire) > 0) client.expire(key,parseInt(expire));
-    
+        if (expire && parseInt(expire) > 0) client.expire(key, parseInt(expire));
+
     } else if (typeof value === 'object') {
         for (let item in value) {
-            client.hmset(key, item, value[item],redis.print)
-            if (expire && parseInt(expire) > 0) client.expire(key,parseInt(expire));
+            client.hmset(key, item, value[item], redis.print)
+            if (expire && parseInt(expire) > 0) client.expire(key, parseInt(expire));
         }
     }
+}
+
+// 存储值
+const setnx = (key, expire = 10) => {
+    return new Promise((resolve, reject) => {
+        client.setnx(key, key,function (err,res) {
+            if (err){
+                reject(new Error(err))
+            }else {
+                if (res){
+                    client.expire(key, parseInt(expire))
+                    resolve(true)
+                }else {
+                    resolve(false)
+                }
+            }
+        })
+    })
+
+
 }
 
 // 获取string
@@ -51,7 +71,7 @@ const getValue = (key) => {
         client.get(key, (err, res) => {
             if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(res)
             }
         })
@@ -73,15 +93,15 @@ const getHValue = (key) => {
 }
 
 // 集合添加
-const sadd = (key,value) => {
+const sadd = (key, value) => {
     return new Promise((resolve, reject) => {
         if (typeof value == 'object') {
             value = JSON.stringify(value)
         }
-        client.sadd(key,value,function (err,res) {
+        client.sadd(key, value, function (err, res) {
             if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(res)
             }
         })
@@ -92,7 +112,7 @@ const smembers = (key) => {
         client.smembers(key, (err, res) => {
             if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(res)
             }
         })
@@ -103,28 +123,28 @@ const srandmember = (key) => {
         client.srandmember(key, (err, res) => {
             if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(res)
             }
         })
     })
 }
-const srem = (key,value) => {
+const srem = (key, value) => {
     return new Promise((resolve, reject) => {
-       client.srem(key,value,function (err,res) {
+        client.srem(key, value, function (err, res) {
             if (err) {
                 resolve(0)
             }
             resolve()
-       })
+        })
     })
 }
 const del = (key) => {
     return new Promise((resolve, reject) => {
-        client.del(key,function (err,res) {
+        client.del(key, function (err, res) {
             if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(res)
             }
         })
@@ -133,16 +153,63 @@ const del = (key) => {
 
 const keys = (value) => {
     return new Promise((resolve, reject) => {
-        client.keys(value,function (err,res) {
+        client.keys(value, function (err, res) {
             if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(res)
             }
         })
     })
 }
+const zadd = (args) => {
+    //args = ["myzset", 1, "one", 2, "two", 3, "three", 4, "four", 5, "five", 6, "six",  8, "eg", 9, "ni",99, "",98, "酒吧"];
+    return new Promise((resolve, reject) => {
+        client.zadd(args, function (addError, addResponse) {
+            if (addError) {
+                reject(addError)
+            } else {
+                resolve(addResponse)
+            }
+        });
+    })
+}
 
+const zrevrangebyscore = (args) => {
+    // const max = 100;
+// const min = 5;
+// const offset = 0;
+// const count = 4;
+// const args2 = ["myzset", max, min, "WITHSCORES", "LIMIT", offset, count];
+    return new Promise((resolve, reject) => {
+        client.zrevrangebyscore(args, function (rangeError, rangeResponse) {
+            if (rangeError) {
+                reject(new Error(addError))
+            } else {
+                var data = new Array()
+                if (rangeResponse.length > 0) {
+                    for (var i = 1;i<=rangeResponse.length;i+=2){
+                        data.push(JSON.parse(rangeResponse[i-1],true))
+                    }
+                }
+                resolve(data)
+            }
+        });
+    })
+}
+
+const zremrangebyscore = (args) => {
+// const args = ["klineHistory:btcusdt:1m", min,max]
+    return new Promise((resolve, reject) => {
+        client.zremrangebyscore(args, function (rangeError, rangeResponse) {
+            if (rangeError) {
+                reject(new Error(addError))
+            } else {
+                resolve(rangeResponse)
+            }
+        });
+    })
+}
 // 导出
 module.exports = {
     client,
@@ -154,5 +221,9 @@ module.exports = {
     smembers,
     srandmember,
     srem,
-    del
+    del,
+    zadd,
+    setnx,
+    zrevrangebyscore,
+    zremrangebyscore
 }

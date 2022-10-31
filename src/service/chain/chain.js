@@ -20,8 +20,8 @@ const chainListInit = () => {
             })
 
             //depth
-            let depthCmd =  huobiCmd.depth.cmd.replace("$symbol$", item.code)
-            depth.push(depthCmd)
+            // let depthCmd =  huobiCmd.depth.cmd.replace("$symbol$", item.code)
+            // depth.push(depthCmd)
             // huobiCmd.depth.type.forEach(typeItem=>{
             //     depth.push(depthCmd.replace("$type$", typeItem))
             // })
@@ -31,14 +31,14 @@ const chainListInit = () => {
             ticker.push(tickerCmd)
 
             //ticker
-            let tradeCmd =  huobiCmd.trade.cmd.replace("$symbol$", item.code)
-            trade.push(tradeCmd)
+            // let tradeCmd =  huobiCmd.trade.cmd.replace("$symbol$", item.code)
+            // trade.push(tradeCmd)
 
             huobidata[item.code] = {
                 kline:kline,
                 ticker:ticker,
-                depth:depth,
-                trade:trade
+                // depth:depth,
+                // trade:trade
             }
         })
         redis.setValue('huobidata', JSON.stringify(huobidata))
