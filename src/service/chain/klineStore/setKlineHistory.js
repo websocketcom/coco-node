@@ -30,7 +30,7 @@ const countHandle = async (symbol, period) => {
 }
 
 
-const tikerHandle = async (symbol, period, startTime = null, endTime = null, size = 500,) => {
+const tikerHandle = async (symbol, period, startTime = null, endTime = null, size = 1000,) => {
     let ticker = null
     let error = null
     let update = {
