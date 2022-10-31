@@ -23,8 +23,8 @@ const socketIo = (server) => {
                             // klineHistory:apeusdt:1m
                             var arg = ["klineHistory:" + meta.sub.replace('@',':'),"+inf",(meta.hasOwnProperty('startTime')?meta.startTime:"-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit')?meta.limit:500)]
                             redis.zrevrangebyscore(arg).then(res=>{
-
-                                socket.emit('History',pako.gzip(btoa(JSON.stringify(res, true)), {to: "string"}))
+                                socket.emit('History',JSON.stringify(res))
+                                // socket.emit('History',pako.gzip(btoa(JSON.stringify(res, true)), {to: "string"}))
                             })
                         default:
                     }
