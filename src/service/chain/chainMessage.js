@@ -36,7 +36,7 @@ const kline_message  = (data) => {
         "v": data.k.v
     }
     redis.setValue('kline:' + data.s.toLowerCase() + '_' + data.k.i, JSON.stringify(klineData))
-    redis.setValue('time:' + data.s.toLowerCase() + '_' + data.k.i,(new Date()).getTime())
+    redis.setValue('klinetime:' + data.s.toLowerCase() + '_' + data.k.i,(new Date()).getTime())
     setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err=>{
         console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@"+data.k.i+">>" + err.message)
     })
