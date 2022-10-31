@@ -41,7 +41,6 @@ const kline_message = async (data) => {
     await setKlineHistory(data.s.toLowerCase(), data.k.i).catch(err => {
         console.log("获取历史数据失败:>>" + data.s.toLowerCase() + "@" + data.k.i + ">>" + err.message)
     })
-    await redis.setValue('klinetime:' + data.s.toLowerCase() + '_' + data.k.i, (new Date()).getTime())
 }
 const ticker_message = (data) => {
     data.currency = data.s.replace('USDT', '/USDT');
