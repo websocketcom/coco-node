@@ -4,7 +4,7 @@ const period = [
     "15m",
     "30m",
     "1h",
-    "1d",
+    "3m",
 ]
 const type = [
     "5",

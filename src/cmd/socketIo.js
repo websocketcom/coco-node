@@ -10,10 +10,10 @@ const socketServer = () => {
     const server = http.createServer(app)
     const io     = ioServer(server)
 
-    setInterval(() => {
-        socketPush.tickerSend(io)
-        socketPush.klineSend(io)
-    }, 1000)
+    // setInterval(() => {
+    //     socketPush.tickerSend(io)
+    //     socketPush.klineSend(io)
+    // }, 1000)
     app.use(bodyparser.json())
 
     app.post('/', async (req, res) => {
@@ -27,22 +27,22 @@ const socketServer = () => {
     app.post('/push', async ({body}, res) => {
         var {
                 event,
-                uid,
                 data
             }   = body
         var sio = io
-        if (event) {
+        if (!event) {
             res.send({
                          code   : 201,
-                         message: "没有type值"
+                         message: "没有event值"
                      })
         }
-        if (uid) {
-            sio = io.sockets[uid]
-        }
+        // if (uid !== undefined) {
+        //     sio = io.sockets[uid]
+        // }
         if (data) {
-            sio.emit(type, data)
+            sio.emit(event, data)
         }
+        res.json(body)
     })
     server.listen(12345, () => {
         console.log('listening on *:12345')
