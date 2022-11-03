@@ -17,18 +17,10 @@ const huobiCmd = {
        "cmd" : "$symbol$@ticker",
        "params" : []
    },
-   // "depth" : {
-   //     "cmd": "$symbol$@depth@100ms",
-   //     "params":[]//type
-   // },
    "kline" : {
        "cmd" : "$symbol$@kline_$period$",
        "params" : period
    },
-   // "trade" : {
-   //     "cmd" : "$symbol$@trade",
-   //     "params":[]//type
-   // }
 }
 
 module.exports = huobiCmd
