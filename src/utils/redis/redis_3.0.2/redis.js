@@ -46,7 +46,7 @@ const setValue = (key, value, expire = null) => {
 }
 
 // 存储值
-const setnx = (key, expire = 10) => {
+const setnx = (key, expire = 20) => {
     return new Promise((resolve, reject) => {
         client.setnx(key, key, function (err, res) {
             if (err) {

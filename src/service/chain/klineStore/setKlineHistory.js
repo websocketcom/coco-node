@@ -1,8 +1,6 @@
 const redis       = require('../../../utils/redis/redis_3.0.2/redis')
 const fetch = require('../../../utils/http/axios').fetch// create instance
 const periodTime = require("../../../config/chain/periodTime")
-const db = require("../../../utils/mysql/Simple/mysql");
-const KlinesSQL = require("../../../utils/mysql/modelExamples/model/klines");
 const countHandle = async (symbol, period) => {
     const max = "+inf";
     const min = "-inf";
@@ -68,7 +66,7 @@ const setKlineHistory = async (symbol, period) => {
                 return
             }
             if (countHandleData.have) {
-                await redis.zrevrangebyscore(["klineHistory:" + symbol + ":" + period, parseInt(countHandleData.time / 1000), "+inf"])
+                await redis.zremrangebyscore(["klineHistory:" + symbol + ":" + period, parseInt(countHandleData.time / 1000), "+inf"])
                 KlineData = await tikerHandle(symbol, period, countHandleData.time)
             } else {
                 KlineData = await tikerHandle(symbol,period)
@@ -89,14 +87,6 @@ const setKlineHistory = async (symbol, period) => {
                 redis.zadd(['klineHistory:' + symbol.toLowerCase() + ':' + period, parseInt(item[0] / 1000), Sdata])
                 return [parseInt(item[0] / 1000), symbol.toLowerCase(), period, Sdata]
             })
-            // updateKline.sort((a, b) => {
-            //     return a[0] - b[0]
-            // })
-            // console.log()
-            // if (updateKline.length > 0) {
-            //     delete updateKline[updateKline.length - 1]
-            //     db.query(KlinesSQL.insert, [updateKline]);
-            // }
         }
     } catch (e) {
         return Promise.reject(new Error(e.message))
