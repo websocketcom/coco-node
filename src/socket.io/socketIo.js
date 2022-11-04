@@ -1,4 +1,5 @@
 const redis      = require('../utils/redis/redis_3.0.2/redis')
+const CompressMsg      = require('../utils/CompressMsg')
 const tickerSend = async (io) => {
     var ticker     = {}
     var tickerKeys = await redis.keys("ticker:*")
@@ -8,7 +9,7 @@ const tickerSend = async (io) => {
             ticker[metaData.currency.replace('/', '').toLowerCase()] = metaData
         })
     }
-    io.emit('Tiker', JSON.stringify(ticker))
+    io.emit('Tiker', CompressMsg(ticker))
 }
 
 const klineSend = async (io) => {
@@ -16,7 +17,7 @@ const klineSend = async (io) => {
     for (var i = 0; i < klineKeys.length - 1; i++) {
         await redis.getValue(klineKeys[i]).then(klineResItemRes => {
             let metaData                                             = JSON.parse(klineResItemRes)
-            io.emit('kline', JSON.stringify(metaData))
+            io.emit('kline', CompressMsg(metaData))
         })
     }
 }
