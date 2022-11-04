@@ -21,7 +21,7 @@ const socketIo = (server) => {
                     var sub = meta.sub.split('@');
                     switch (meta.type) {
                         case 'History':
-                            var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]]: "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
+                            var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime: "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
                             redis.zrevrangebyscore(arg).then(res => {
 
                                 socket.emit('History', CompressMsg({
