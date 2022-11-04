@@ -10,10 +10,11 @@ const socketServer = () => {
     const server = http.createServer(app)
     const io     = ioServer(server)
 
-    // setInterval(() => {
-    //     socketPush.tickerSend(io)
-    //     socketPush.klineSend(io)
-    // }, 1000)
+    setInterval(() => {
+        socketPush.tickerSend(io)
+        socketPush.klineSend(io)
+    }, 1000)
+
     app.use(bodyparser.json())
 
     app.post('/', async (req, res) => {

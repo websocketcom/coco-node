@@ -10,6 +10,7 @@ const tickerSend = async (io) => {
     }
     io.emit('Tiker', JSON.stringify(ticker))
 }
+
 const klineSend = async (io) => {
     var klineKeys = await redis.keys("kline:*")
     for (var i = 0; i < klineKeys.length - 1; i++) {
@@ -18,7 +19,6 @@ const klineSend = async (io) => {
             io.emit('kline', JSON.stringify(metaData))
         })
     }
-
 }
 module.exports = {
     tickerSend,
