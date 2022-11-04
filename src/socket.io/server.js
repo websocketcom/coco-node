@@ -1,5 +1,6 @@
 const {Server}    = require("socket.io");
 const redis       = require("../utils/redis/redis_3.0.2/redis");
+const period       = require("../config/chain/periodTime");
 const pako        = require("pako");
 const {btoa}      = require("buffer");
 const CompressMsg = require('../utils/CompressMsg')
@@ -17,11 +18,12 @@ const socketIo = (server) => {
             try {
                 let meta = JSON.parse(data.toString());
                 if (meta.hasOwnProperty('type') && meta.hasOwnProperty('sub')) {
+                    var sub = meta.sub.split('@');
                     switch (meta.type) {
                         case 'History':
-                            var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime : "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
+                            var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]]: "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
                             redis.zrevrangebyscore(arg).then(res => {
-                                var sub = meta.sub.split('@');
+
                                 socket.emit('History', CompressMsg({
                                                                           cid  : sub[0],
                                                                           cycle: sub[1],
