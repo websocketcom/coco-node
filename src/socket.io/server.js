@@ -19,25 +19,32 @@ const socketIo = (server) => {
                 let meta = JSON.parse(data.toString());
                 if (meta.hasOwnProperty('type') && meta.hasOwnProperty('sub')) {
                     var sub = meta.sub.split('@');
-                    switch (meta.type) {
-                        case 'History':
-                            var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]]: "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
-                            redis.zrevrangebyscore(arg).then(res => {
+                    var max = ((parseInt((new Date()).getTime()/1000) / period[sub[1]]) - 1) * period[sub[1]];
+                    var min = "-inf";
+                    if(meta.hasOwnProperty('startTime') && meta.startTime){
+                        min = meta.startTime + period[sub[1]]
+                    }
+                    if (min == '-inf' || min <= max){
+                        switch (meta.type) {
+                            case 'History':
+                                var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]]: "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
+                                redis.zrevrangebyscore(arg).then(res => {
 
-                                socket.emit('History', CompressMsg({
-                                                                          cid  : sub[0],
-                                                                          cycle: sub[1],
-                                                                          list : res
-                                                                      }))
-                            })
-                            break;
-                        case "NowList":
-                            socket.emit('NowList', CompressMsg({ }))
-                            break;
-                        case "Message":
-                            socket.emit('Message', CompressMsg({}))
-                            break;
-                        default:
+                                    socket.emit('History', CompressMsg({
+                                                                           cid  : sub[0],
+                                                                           cycle: sub[1],
+                                                                           list : res
+                                                                       }))
+                                })
+                                break;
+                            case "NowList":
+                                socket.emit('NowList', CompressMsg({ }))
+                                break;
+                            case "Message":
+                                socket.emit('Message', CompressMsg({}))
+                                break;
+                            default:
+                        }
                     }
                 }
             } catch (err) {
