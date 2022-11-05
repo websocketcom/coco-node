@@ -12,6 +12,7 @@ const socketIo = (server) => {
         }
     })
     io.on('connection', socket => {
+        console.log("id:>>" + socket.id)
         socket.on('getPush', (data) => {
             try {
                 let meta = JSON.parse(data.toString());
@@ -24,7 +25,7 @@ const socketIo = (server) => {
                             if (meta.hasOwnProperty('startTime') && meta.startTime) {
                                 min = meta.startTime + period[sub[1]]
                             }
-                            console.log(socket.pid)
+
                             if (min == '-inf' || min <= max) {
                                 var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]] : "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
                                 redis.zrevrangebyscore(arg).then(res => {
@@ -46,7 +47,7 @@ const socketIo = (server) => {
                     }
                 }
             } catch (err) {
-                console.log(err)
+                console.log(err.message);
             }
         })
         socket.on('disconnect', () => {
