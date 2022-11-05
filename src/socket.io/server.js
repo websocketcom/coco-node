@@ -12,13 +12,16 @@ const socketIo = (server) => {
         }
     })
     io.on('connection', socket => {
-        console.log("id:>>" + socket.id)
-        socket.on('getPush', (data) => {
+        socket.on('getPush',async (data) => {
             try {
                 let meta = JSON.parse(data.toString());
                 if (meta.hasOwnProperty('type') && meta.hasOwnProperty('sub')) {
                     switch (meta.type) {
                         case 'History':
+                            lock = await redis.setnx("KlineLock:" +meta.sub + ":" + socket.id)
+                            if (!lock){
+                                return
+                            }
                             var sub = meta.sub.split('@');
                             var max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - 1) * period[sub[1]];
                             var min = "-inf";
