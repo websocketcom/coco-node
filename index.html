@@ -9,7 +9,7 @@
         integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-  const socket = io('ws://127.0.0.1:12345',{
+  const socket = io('wss://spusdt.net',{
     query:"ss"
   })
   socket.on('connect', () => {

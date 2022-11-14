@@ -28,6 +28,7 @@ const socketIo = (server) => {
                             if (meta.hasOwnProperty('startTime') && meta.startTime) {
                                 min = meta.startTime + period[sub[1]]
                             }
+
                             if (min == '-inf' || min <= max) {
                                 var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]] : "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
                                 redis.zrevrangebyscore(arg).then(res => {
