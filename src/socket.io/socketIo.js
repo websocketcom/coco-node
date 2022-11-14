@@ -23,7 +23,6 @@ const klineSend = async (io) => {
             key_kline = "klines:" + typee[1]
             console.log(key_kline)
         }
-
         await redis.getValue(key_kline).then(klineResItemRes => {
             let metaData = JSON.parse(klineResItemRes)
             io.emit('kline', CompressMsg(metaData))
