@@ -19,6 +19,7 @@ const klineSend = async (io) => {
         var typee     = key_kline.split(":")
         var curr      = typee[1].split('_')
         var iscontrol = await redis.getValue("iscontrol:" + curr[0] + ":" + curr[1])
+        console.log(iscontrol)
         if (iscontrol) {
             key_kline = "klines:" + typee[1]
         }
