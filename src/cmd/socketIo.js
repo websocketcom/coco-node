@@ -14,7 +14,7 @@ const socketServer = () => {
             timer()
             socketPush.tickerSend(io)
             socketPush.klineSend(io)
-        }, 1000)
+        }, 995)
     }
     timer()
 
