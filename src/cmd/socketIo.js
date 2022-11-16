@@ -9,13 +9,15 @@ const ioServer     = require('../socket.io/server')
 const socketServer = () => {
     const server = http.createServer(app)
     const io     = ioServer(server)
+    const timer  = () => {
+        setTimeout(() => {
+            timer()
+            socketPush.tickerSend(io)
+            socketPush.klineSend(io)
+        }, 1000)
+    }
+    timer()
 
-    const IntervalTimer =  setTimeout(() => {
-        IntervalTimer()
-        socketPush.tickerSend(io)
-        socketPush.klineSend(io)
-    }, 1000)
-    IntervalTimer()
     app.use(bodyparser.json())
 
     app.post('/', async (req, res) => {
