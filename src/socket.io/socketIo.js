@@ -13,15 +13,20 @@ const tickerSend  = async (io) => {
 }
 
 const klineSend = async (io) => {
+    $now_time = parseInt((new Date()).getTime()/1000);
     var klineKeys = await redis.keys("kline:*")
     for (var i = 0; i < klineKeys.length - 1; i++) {
         var key_kline = klineKeys[i]
         var typee     = key_kline.split(":")
         var curr      = typee[1].split('_')
         var iscontrol = await redis.getValue("iscontrol:" + curr[0] + ":" + curr[1])
-        console.log(iscontrol.hasOwnProperty('begintime'))
         if (iscontrol) {
-            key_kline = "klines:" + typee[1]
+            iscontrol = JSON.parse(iscontrol)
+            if ((iscontrol.hasOwnProperty('begintime') && iscontrol.begintime < $now_time )
+            &&
+                (iscontrol.hasOwnProperty('begintime') && iscontrol.endtime > $now_time)){
+                key_kline = "klines:" + typee[1]
+            }
         }
         await redis.getValue(key_kline).then(klineResItemRes => {
             let metaData = JSON.parse(klineResItemRes)
