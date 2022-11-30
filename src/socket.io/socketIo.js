@@ -22,7 +22,7 @@ const klineSend = async (io) => {
         var iscontrol = await redis.getValue("iscontrol:" + curr[0] + ":" + curr[1])
         if (iscontrol) {
             iscontrol = JSON.parse(iscontrol)
-            if ((iscontrol.hasOwnProperty('begintime') && parseInt(iscontrol.begintime) < $now_time - 3 )
+            if ((iscontrol.hasOwnProperty('begintime') && parseInt(iscontrol.begintime) < $now_time - 2 )
             &&
                 (iscontrol.hasOwnProperty('endtime') && parseInt(iscontrol.endtime) > $now_time)
             ){

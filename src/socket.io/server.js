@@ -18,7 +18,7 @@ const socketIo = (server) => {
                 if (meta.hasOwnProperty('type') && meta.hasOwnProperty('sub')) {
                     switch (meta.type) {
                         case 'History':
-                            lock = await redis.setnx("KlineLock:" +meta.sub + ":" + socket.id,5)
+                            lock = await redis.setnx("KlineLock:" +meta.sub + ":" + socket.id,2)
                             if (!lock){
                                 return
                             }
