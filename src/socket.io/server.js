@@ -22,15 +22,8 @@ const socketIo = (server) => {
                             if (!lock){
                                 return
                             }
-                            var periodNum = 1
-
                             var sub = meta.sub.split('@');
-                            var kline_back = await redis.getValue("kline_back:" . meta.sub.replace('@','_'))
-                            if (kline_back){
-                                kline_back = JSON.parse(kline_back)
-                                periodNum = 2
-                            }
-                            var max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - periodNum) * period[sub[1]];
+                            var max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - 1) * period[sub[1]];
                             var min = "-inf";
                             if (meta.hasOwnProperty('startTime') && meta.startTime) {
                                 min = meta.startTime + period[sub[1]]
@@ -39,9 +32,6 @@ const socketIo = (server) => {
                             if (min == '-inf' || min <= max) {
                                 var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]] : "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
                                 redis.zrevrangebyscore(arg).then(res => {
-                                    if (periodNum == 2){
-                                        res.push(kline_back)
-                                    }
                                     socket.emit('History', CompressMsg({
                                                                            cid  : sub[0],
                                                                            cycle: sub[1],
