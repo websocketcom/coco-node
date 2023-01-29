@@ -3,7 +3,7 @@ const CompressMsg = require('../utils/CompressMsg')
 const tickerSend  = async (io) => {
     var ticker     = {}
     var tickerKeys = await redis.keys("ticker:*")
-    for (var i = 0; i < tickerKeys.length - 1; i++) {
+    for (var i = 0; i <= tickerKeys.length - 1; i++) {
         await redis.getValue(tickerKeys[i]).then(tickerResItemRes => {
             let metaData                                             = JSON.parse(tickerResItemRes)
             ticker[metaData.currency.replace('/', '').toLowerCase()] = metaData
