@@ -30,6 +30,7 @@ const socketIo = (server) => {
                             }
                             if (min == '-inf' || min <= max) {
                                 var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", min, "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
+                               console.log(arg)
                                 redis.zrevrangebyscore(arg).then(res => {
                                     socket.emit('History', CompressMsg({
                                                                            cid  : sub[0],
