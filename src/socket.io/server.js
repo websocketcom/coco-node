@@ -12,29 +12,32 @@ const socketIo = (server) => {
         }
     })
     io.on('connection', socket => {
-        socket.on('getPush', async (data) => {
+        socket.on('getPush',async (data) => {
             try {
                 let meta = JSON.parse(data.toString());
                 if (meta.hasOwnProperty('type') && meta.hasOwnProperty('sub')) {
                     switch (meta.type) {
                         case 'History':
-                            lock = await redis.setnx("KlineLock:" + meta.sub + ":" + socket.id, 2)
-                            if (!lock) {
+                            lock = await redis.setnx("KlineLock:" +meta.sub + ":" + socket.id,2)
+                            if (!lock){
                                 return
                             }
                             var sub = meta.sub.split('@');
+                            var max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - 1) * period[sub[1]];
                             var min = "-inf";
                             if (meta.hasOwnProperty('startTime') && meta.startTime) {
                                 min = meta.startTime + period[sub[1]]
                             }
-                            var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", (meta.hasOwnProperty('startTime') ? meta.startTime + period[sub[1]] : "-inf"), "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
-                            redis.zrevrangebyscore(arg).then(res => {
-                                socket.emit('History', CompressMsg({
-                                                                       cid  : sub[0],
-                                                                       cycle: sub[1],
-                                                                       list : res
-                                                                   }))
-                            })
+                            if (min == '-inf' || min <= max) {
+                                var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", min, "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
+                                redis.zrevrangebyscore(arg).then(res => {
+                                    socket.emit('History', CompressMsg({
+                                                                           cid  : sub[0],
+                                                                           cycle: sub[1],
+                                                                           list : res
+                                                                       }))
+                                })
+                            }
                             break;
                         case "NowList":
                             socket.emit('NowList', CompressMsg({}))
