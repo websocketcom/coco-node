@@ -26,7 +26,7 @@ const socketIo = (server) => {
                             var max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - 1) * period[sub[1]];
                             var min = "-inf";
                             if (meta.hasOwnProperty('startTime') && meta.startTime) {
-                                min = meta.startTime + period[sub[1]]
+                                min = Number(meta.startTime) + period[sub[1]]
                             }
                             if (min == '-inf' || min <= max) {
                                 var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", min, "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
