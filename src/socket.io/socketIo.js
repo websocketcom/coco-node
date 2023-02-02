@@ -27,7 +27,6 @@ const klineSend = async (io) => {
                 (iscontrol.hasOwnProperty('endtime') && parseInt(iscontrol.endtime) > $now_time)
             ){
                 key_kline = "klines:" + typee[1]
-                console.log(key_kline)
             }
         }
         await redis.getValue(key_kline).then(klineResItemRes => {

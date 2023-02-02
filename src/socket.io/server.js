@@ -54,7 +54,6 @@ const socketIo = (server) => {
             }
         })
         socket.on('disconnect', () => {
-            console.log(socket)
             console.log('用户已断开连接')
         })
     })
