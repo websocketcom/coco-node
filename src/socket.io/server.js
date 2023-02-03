@@ -12,14 +12,14 @@ const socketIo = (server) => {
         }
     })
     io.on('connection', socket => {
-        socket.on('getPush',async (data) => {
+        socket.on('getPush', async (data) => {
             try {
                 let meta = JSON.parse(data.toString());
                 if (meta.hasOwnProperty('type') && meta.hasOwnProperty('sub')) {
                     switch (meta.type) {
                         case 'History':
-                            lock = await redis.setnx("KlineLock:" +meta.sub + ":" + socket.id,2)
-                            if (!lock){
+                            lock = await redis.setnx("KlineLock:" + meta.sub + ":" + socket.id, 2)
+                            if (!lock) {
                                 return
                             }
                             var sub = meta.sub.split('@');
@@ -30,7 +30,7 @@ const socketIo = (server) => {
                             }
                             if (min == '-inf' || min <= max) {
                                 var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", min, "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
-                               console.log(arg)
+                                console.log(arg)
                                 redis.zrevrangebyscore(arg).then(res => {
                                     socket.emit('History', CompressMsg({
                                                                            cid  : sub[0],
@@ -47,7 +47,12 @@ const socketIo = (server) => {
                             socket.emit('Message', CompressMsg({}))
                             break;
                         case "BuyStatus":
-                            socket.emit('Message', CompressMsg({}))
+                            let sub = meta.sub.split('@');
+                            socket.emit('Message', CompressMsg({
+                                                                   cid  : sub[0],
+                                                                   cycle: sub[1],
+                                                                   list : {}
+                                                               }))
                             break;
                         default:
                     }
