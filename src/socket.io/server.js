@@ -43,13 +43,15 @@ const socketIo = (server) => {
                             socket.emit('NowList', CompressMsg({}))
                             break;
                         case "Message":
-                            let subs = meta.sub.split('@');
+                            let MessageSub = meta.sub.split('@');
+                            break;
+                        case "BuyStatus":
+                            let BuyStatusSub = meta.sub.split('@');
                             socket.emit('Message', CompressMsg({
-                                                                   cid  : subs[0],
-                                                                   cycle: subs[1],
+                                                                   cid  : BuyStatusSub[0],
+                                                                   cycle: BuyStatusSub[1],
                                                                    list : {}
                                                                }))
-                            break;
                             break;
                         default:
                     }
