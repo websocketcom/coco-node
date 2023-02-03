@@ -47,10 +47,10 @@ const socketIo = (server) => {
                             socket.emit('Message', CompressMsg({}))
                             break;
                         case "BuyStatus":
-                            let sub = meta.sub.split('@');
+                            let subs = meta.sub.split('@');
                             socket.emit('Message', CompressMsg({
-                                                                   cid  : sub[0],
-                                                                   cycle: sub[1],
+                                                                   cid  : subs[0],
+                                                                   cycle: subs[1],
                                                                    list : {}
                                                                }))
                             break;
