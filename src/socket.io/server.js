@@ -46,6 +46,9 @@ const socketIo = (server) => {
                         case "Message":
                             socket.emit('Message', CompressMsg({}))
                             break;
+                        case "BuyStatus":
+                            socket.emit('Message', CompressMsg({}))
+                            break;
                         default:
                     }
                 }
