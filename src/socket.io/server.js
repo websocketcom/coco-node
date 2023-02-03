@@ -44,10 +44,11 @@ const socketIo = (server) => {
                             break;
                         case "Message":
                             let MessageSub = meta.sub.split('@');
+                            socket.emit('Message', CompressMsg({}))
                             break;
                         case "BuyStatus":
                             let BuyStatusSub = meta.sub.split('@');
-                            socket.emit('Message', CompressMsg({
+                            socket.emit('BuyStatus', CompressMsg({
                                                                    cid  : BuyStatusSub[0],
                                                                    cycle: BuyStatusSub[1],
                                                                    list : {}
