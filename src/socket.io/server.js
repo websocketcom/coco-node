@@ -22,14 +22,14 @@ const socketIo = (server) => {
                             if (!lock){
                                 return
                             }
-                            var sub = meta.sub.split('@');
-                            var max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - 1) * period[sub[1]];
-                            var min = "-inf";
+                            let sub = meta.sub.split('@');
+                            let max = ((parseInt((new Date()).getTime() / 1000) / period[sub[1]]) - 1) * period[sub[1]];
+                            let min = "-inf";
                             if (meta.hasOwnProperty('startTime') && meta.startTime) {
                                 min = Number(meta.startTime) + period[sub[1]]
                             }
                             if (min == '-inf' || min <= max) {
-                                var arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", min, "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
+                                let arg = ["klineHistory:" + meta.sub.replace('@', ':'), "+inf", min, "WITHSCORES", "LIMIT", 0, (meta.hasOwnProperty('limit') ? meta.limit : 500)]
                                console.log(arg)
                                 redis.zrevrangebyscore(arg).then(res => {
                                     socket.emit('History', CompressMsg({
@@ -44,7 +44,13 @@ const socketIo = (server) => {
                             socket.emit('NowList', CompressMsg({}))
                             break;
                         case "Message":
-                            socket.emit('Message', CompressMsg({}))
+                            let subs = meta.sub.split('@');
+                            socket.emit('Message', CompressMsg({
+                                                                   cid  : subs[0],
+                                                                   cycle: subs[1],
+                                                                   list : {}
+                                                               }))
+                            break;
                             break;
                         default:
                     }
