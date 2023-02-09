@@ -2,7 +2,42 @@ const {Server}    = require("socket.io");
 const redis       = require("../utils/redis/redis_3.0.2/redis");
 const period      = require("../config/chain/periodTime");
 const CompressMsg = require('../utils/CompressMsg')
-
+const timeType = {
+    '1m': 60,
+    '3m': 180,
+    '5m': 300,
+    '15m': 900,
+    '30m': 1800,
+    '1h': 3600,
+    '1d': 86400,
+}
+const getTimeDate = (Timezone = null) => {
+    let date = null
+    if (Timezone) {
+        date = new Date(Timezone)
+    } else {
+        date = new Date()
+    }
+    let Year = date.getFullYear().toString()
+    let Month = (date.getUTCMonth() + 1).toString()
+    if (Month.length == 1) {
+        Month = `0${Month}`
+    }
+    let Day = date.getDate().toString()
+    if (Day.length == 1) {
+        Day = `0${Day}`
+    }
+    return `${Year}${Month}${Day}`
+}
+const getTypeTime = (type = "1m") => {
+    let time = parseInt((new Date()).getTime() / 1000);
+    let now = parseInt(time / timeType[type])
+    return {
+        "last": (now - 1) * timeType[type],
+        "now": now * timeType[type],
+        "second": (now + 1) * timeType[type]
+    }
+}
 const socketIo = (server) => {
     const io = new Server(server, {
         pingInterval   : 5000,
@@ -48,11 +83,29 @@ const socketIo = (server) => {
                             break;
                         case "BuyStatus":
                             let BuyStatusSub = meta.sub.split('@');
+                            const BuyStatusType = getTypeTime(BuyStatusSub[1])
+                            const BuyStatusDate = getTimeDate()
+                            let BuyStatusList = await redis.zrevrangebyscore(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3], 1)
+                            let BuyStatusListData = {
+                                "last": [],
+                                "now": [],
+                                "second": []
+                            }
+                            if (Array.isArray(BuyStatusList) && BuyStatusList.length >= 3) {
+                                BuyStatusList.forEach(item => {
+                                    let itemData = item
+                                    Object.keys(BuyStatusType).forEach((iitem)=>{
+                                        if (itemData.begin_time == BuyStatusType[iitem]){
+                                            BuyStatusListData[iitem] = itemData
+                                        }
+                                    })
+                                })
+                            }
                             socket.emit('BuyStatus', CompressMsg({
-                                                                   cid  : BuyStatusSub[0],
-                                                                   cycle: BuyStatusSub[1],
-                                                                   list : {}
-                                                               }))
+                                                                     cid: BuyStatusSub[0],
+                                                                     cycle: BuyStatusSub[1],
+                                                                     list: BuyStatusListData
+                                                                 }))
                             break;
                         default:
                     }
