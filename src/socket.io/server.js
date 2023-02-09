@@ -91,7 +91,7 @@ const socketIo = (server) => {
                                 "now": [],
                                 "second": []
                             }
-                            if (Array.isArray(BuyStatusList) && BuyStatusList.length >= 3) {
+                            if (BuyStatusList) {
                                 BuyStatusList.forEach(item => {
                                     let itemData = item
                                     Object.keys(BuyStatusType).forEach((iitem)=>{
