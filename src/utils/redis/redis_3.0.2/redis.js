@@ -32,7 +32,7 @@ const options      = (host = false,select = null) => {
                 // a individual error
                 return new Error("The server refused the connection");
             }
-            if (options.total_retry_time > 1000 * 60 * 60) {
+            if (options.total_retry_time > 1000 * 60) {
                 // End reconnecting after a specific timeout and flush all commands
                 // with a individual error
                 return new Error("Retry time exhausted");
