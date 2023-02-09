@@ -39,6 +39,7 @@ const options      = (host = false,select = null) => {
             }
             if (options.attempt > 10) {
                 // End reconnecting with built in error
+                return new Error("End reconnecting with built in error");
                 return undefined;
             }
             // reconnect after
