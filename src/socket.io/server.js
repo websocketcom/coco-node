@@ -85,26 +85,27 @@ const socketIo = (server) => {
                             let BuyStatusSub = meta.sub.split('@');
                             const BuyStatusType = getTypeTime(BuyStatusSub[1])
                             const BuyStatusDate = getTimeDate()
-                            let BuyStatusList = await redis.zrevrangebyscore(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3], 1)
-                            let BuyStatusListData = {
-                                "last": [],
-                                "now": [],
-                                "second": []
-                            }
-                            if (BuyStatusList) {
-                                BuyStatusList.forEach(item => {
-                                    let itemData = item
-                                    Object.keys(BuyStatusType).forEach((iitem)=>{
-                                        if (itemData.begin_time == BuyStatusType[iitem]){
-                                            BuyStatusListData[iitem] = itemData
-                                        }
-                                    })
-                                })
-                            }
+                            console.log(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3])
+                            // let BuyStatusList = await redis.zrevrangebyscore(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3], 1)
+                            // let BuyStatusListData = {
+                            //     "last": [],
+                            //     "now": [],
+                            //     "second": []
+                            // }
+                            // if (BuyStatusList) {
+                            //     BuyStatusList.forEach(item => {
+                            //         let itemData = item
+                            //         Object.keys(BuyStatusType).forEach((iitem)=>{
+                            //             if (itemData.begin_time == BuyStatusType[iitem]){
+                            //                 BuyStatusListData[iitem] = itemData
+                            //             }
+                            //         })
+                            //     })
+                            // }
                             socket.emit('BuyStatus', CompressMsg({
                                                                      cid: BuyStatusSub[0],
                                                                      cycle: BuyStatusSub[1],
-                                                                     list: BuyStatusListData
+                                                                     list: []//BuyStatusListData
                                                                  }))
                             break;
                         default:
