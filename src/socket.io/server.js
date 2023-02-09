@@ -105,7 +105,7 @@ const socketIo = (server) => {
                             socket.emit('BuyStatus', CompressMsg({
                                                                      cid: BuyStatusSub[0],
                                                                      cycle: BuyStatusSub[1],
-                                                                     list: []//BuyStatusListData
+                                                                     list: BuyStatusListData
                                                                  }))
                             break;
                         default:
