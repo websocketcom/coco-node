@@ -82,10 +82,10 @@ const socketIo = (server) => {
                             socket.emit('Message', CompressMsg({}))
                             break;
                         case "BuyStatus":
-                            let BuyStatusSub = meta.sub.split('@');
-                            const BuyStatusType = getTypeTime(BuyStatusSub[1])
-                            const BuyStatusDate = getTimeDate()
-                            console.log(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3])
+                            // let BuyStatusSub = meta.sub.split('@');
+                            // const BuyStatusType = getTypeTime(BuyStatusSub[1])
+                            // const BuyStatusDate = getTimeDate()
+                            // console.log(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3])
                             // let BuyStatusList = await redis.zrevrangebyscore(["order:" + BuyStatusDate + ":" + BuyStatusSub[1] + ":" + BuyStatusSub[0], BuyStatusType.second, BuyStatusType.last, "WITHSCORES", "LIMIT", 0, 3], 1)
                             // let BuyStatusListData = {
                             //     "last": [],
